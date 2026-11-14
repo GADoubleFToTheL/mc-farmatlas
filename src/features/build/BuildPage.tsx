@@ -4,6 +4,7 @@ import { NotFoundPage } from '../../app/NotFoundPage';
 import { useCatalog } from '../../data/farms';
 import { updateFarmState, useFarmState } from '../../db/store';
 import { blockIndex, paletteIndexAt } from '../../lib/structure';
+import { isIdentity } from '../../lib/transform';
 import { Button, cx } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
@@ -20,16 +21,13 @@ import { useWakeLock } from './useWakeLock';
 export function BuildPage() {
   const { id } = useParams();
   const summary = useCatalog().find(id);
-  const blueprint = useBlueprintOrNull(summary);
+  const farmState = useFarmState(id ?? '');
+  const blueprint = useBlueprint(summary?.farm ?? EMPTY_FARM, farmState.orientation);
   if (!summary || !blueprint) return <NotFoundPage />;
   return <BuildMode key={summary.farm.id} summary={summary} blueprint={blueprint} />;
 }
 
 const EMPTY_FARM = { blueprint: null } as unknown as FarmSummary['farm'];
-
-function useBlueprintOrNull(summary: FarmSummary | undefined): LoadedBlueprint | null {
-  return useBlueprint(summary?.farm ?? EMPTY_FARM);
-}
 
 function firstOpenLayer(done: readonly number[], total: number): number {
   for (let i = 0; i < total; i++) if (!done.includes(i + 1)) return i;
@@ -171,7 +169,12 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
             Alle Ebenen sind abgehakt – die Farm ist fertig gebaut.
           </p>
         ) : (
-          steps.length > 0 && <p className="max-h-20 overflow-y-auto text-sm leading-snug text-muted">{steps.join(' ')}</p>
+          steps.length > 0 && (
+            <p className="max-h-20 overflow-y-auto text-sm leading-snug text-muted">
+              {steps.join(' ')}
+              {!isIdentity(farmState.orientation) && ' (Himmelsrichtungen im Text gelten für den ungedrehten Bauplan.)'}
+            </p>
+          )
         )}
 
         <LayerStepper layer={layer} total={total} onChange={setLayer} done={done} />

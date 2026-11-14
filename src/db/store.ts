@@ -8,6 +8,7 @@ import {
   createBackup,
   DEFAULT_SETTINGS,
   emptyFarmState,
+  farmStateSchema,
   mergeFarmStates,
   settingsSchema,
   type Backup,
@@ -67,6 +68,16 @@ export function parseLocalFarms(raw: readonly unknown[]): LocalFarmRecord[] {
   return records;
 }
 
+/** Ergänzt Felder, die ältere gespeicherte Einträge noch nicht kennen. */
+function parseFarmStates(raw: readonly unknown[]): FarmState[] {
+  const states: FarmState[] = [];
+  for (const entry of raw) {
+    const parsed = farmStateSchema.safeParse(entry);
+    if (parsed.success) states.push(parsed.data);
+  }
+  return states;
+}
+
 let initPromise: Promise<void> | null = null;
 
 /** Lädt die gespeicherten Daten einmalig beim Start. */
@@ -85,7 +96,7 @@ export function initStore(): Promise<void> {
       ready: true,
       persistent,
       settings,
-      farmStates: new Map(farmStates.map((s) => [s.farmId, s])),
+      farmStates: new Map(parseFarmStates(farmStates).map((s) => [s.farmId, s])),
       localFarms: new Map(parseLocalFarms(userFarms).map((r) => [r.id, r])),
     });
   })();

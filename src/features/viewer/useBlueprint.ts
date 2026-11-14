@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { ContainerContent, Farm } from '../../lib/schema';
 import { blockIndex, structureFromBlueprint, type Structure } from '../../lib/structure';
+import { NO_ORIENTATION, orientStructure, type Orientation } from '../../lib/transform';
 import { buildVisuals, type BlockVisual } from './visuals';
 
 export interface LoadedBlueprint {
@@ -13,19 +14,25 @@ export interface LoadedBlueprint {
   markers: ReadonlySet<number>;
 }
 
-/** Bauplan einer Farm als Struktur samt Darstellung; null, wenn keiner vorhanden ist. */
-export function useBlueprint(farm: Farm): LoadedBlueprint | null {
+export function loadBlueprint(structure: Structure, start: { x: number; y: number; z: number }): LoadedBlueprint {
+  const contents = new Map<number, ContainerContent>();
+  for (const c of structure.containers ?? []) contents.set(blockIndex(structure.size, c.x, c.y, c.z), c);
+  return { structure, visuals: buildVisuals(structure), start, contents, markers: new Set(contents.keys()) };
+}
+
+/**
+ * Bauplan einer Farm als Struktur samt Darstellung, in der gewählten Ausrichtung
+ * (gedreht/gespiegelt); null, wenn die Farm keinen Bauplan hat.
+ */
+export function useBlueprint(farm: Farm, orientation: Orientation = NO_ORIENTATION): LoadedBlueprint | null {
+  const base = useMemo(
+    () => (farm.blueprint ? { structure: structureFromBlueprint(farm.blueprint), start: farm.blueprint.start } : null),
+    [farm],
+  );
+  const { rot, mirror } = orientation;
   return useMemo(() => {
-    if (!farm.blueprint) return null;
-    const structure = structureFromBlueprint(farm.blueprint);
-    const contents = new Map<number, ContainerContent>();
-    for (const c of structure.containers ?? []) contents.set(blockIndex(structure.size, c.x, c.y, c.z), c);
-    return {
-      structure,
-      visuals: buildVisuals(structure),
-      start: farm.blueprint.start,
-      contents,
-      markers: new Set(contents.keys()),
-    };
-  }, [farm]);
+    if (!base) return null;
+    const oriented = orientStructure(base.structure, base.start, { rot, mirror });
+    return loadBlueprint(oriented.structure, oriented.start);
+  }, [base, rot, mirror]);
 }

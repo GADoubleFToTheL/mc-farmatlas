@@ -35,17 +35,36 @@ export const farmStateSchema = z.object({
   location: z
     .object({ x: z.number().int(), y: z.number().int(), z: z.number().int(), dimension: z.string() })
     .nullable(),
+  /** Gewählte Ausrichtung des Bauplans: erst spiegeln (West ↔ Ost), dann drehen. */
+  orientation: z
+    .object({ rot: z.number().int().min(0).max(3), mirror: z.boolean() })
+    .default({ rot: 0, mirror: false }),
   updatedAt: z.number(),
 });
 export type FarmState = z.infer<typeof farmStateSchema>;
 
 export function emptyFarmState(farmId: string): FarmState {
-  return { farmId, favorite: false, doneLayers: [], checkedMaterials: [], notes: '', location: null, updatedAt: 0 };
+  return {
+    farmId,
+    favorite: false,
+    doneLayers: [],
+    checkedMaterials: [],
+    notes: '',
+    location: null,
+    orientation: { rot: 0, mirror: false },
+    updatedAt: 0,
+  };
 }
 
 export function isEmptyFarmState(s: FarmState): boolean {
   return (
-    !s.favorite && s.doneLayers.length === 0 && s.checkedMaterials.length === 0 && s.notes === '' && s.location === null
+    !s.favorite &&
+    s.doneLayers.length === 0 &&
+    s.checkedMaterials.length === 0 &&
+    s.notes === '' &&
+    s.location === null &&
+    s.orientation.rot === 0 &&
+    !s.orientation.mirror
   );
 }
 

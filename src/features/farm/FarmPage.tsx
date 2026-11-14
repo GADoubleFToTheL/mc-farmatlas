@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { NotFoundPage } from '../../app/NotFoundPage';
 import { useCatalog } from '../../data/farms';
-import { deleteLocalFarm, toggleFavorite, useFarmState, useSettings } from '../../db/store';
+import { deleteLocalFarm, toggleFavorite, updateFarmState, useFarmState, useSettings } from '../../db/store';
 import { CATEGORY_LABELS, EDITION_LABELS, versionFit, type FarmSummary } from '../../lib/catalog';
 import { Button, cx } from '../../ui/controls';
 import { Icon, type IconName } from '../../ui/Icon';
@@ -10,6 +10,7 @@ import { MaterialsPanel } from '../materials/MaterialsPanel';
 import { BlueprintView } from '../viewer/BlueprintView';
 import { useBlueprint } from '../viewer/useBlueprint';
 import { FarmInfo } from './FarmInfo';
+import { MyNotes } from './MyNotes';
 
 const TABS: ReadonlyArray<{ id: 'info' | 'bauplan' | 'material'; label: string; icon: IconName }> = [
   { id: 'info', label: 'Info', icon: 'info' },
@@ -107,7 +108,7 @@ function FarmPageContent({ summary, tab: tabParam }: { summary: FarmSummary; tab
   const [search, setSearch] = useSearchParams();
   const settings = useSettings();
   const farmState = useFarmState(farm.id);
-  const blueprint = useBlueprint(farm);
+  const blueprint = useBlueprint(farm, farmState.orientation);
 
   const tab: TabId = TABS.some((t) => t.id === tabParam) ? (tabParam as TabId) : 'info';
   const total = blueprint?.structure.size.y ?? 1;
@@ -170,6 +171,7 @@ function FarmPageContent({ summary, tab: tabParam }: { summary: FarmSummary; tab
         <>
           {!blueprint && <MissingBlueprint farmId={farm.id} />}
           <ImportNotice summary={summary} />
+          <MyNotes farmState={farmState} />
           <FarmInfo
             summary={summary}
             myEdition={settings.edition}
@@ -186,6 +188,8 @@ function FarmPageContent({ summary, tab: tabParam }: { summary: FarmSummary; tab
             onLayerChange={setLayer}
             doneLayers={farmState.doneLayers}
             stepsForLayer={stepsForLayer}
+            orientation={farmState.orientation}
+            onOrientationChange={(orientation) => updateFarmState(farm.id, { orientation })}
           />
         ) : (
           <MissingBlueprint farmId={farm.id} />

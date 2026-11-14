@@ -32,6 +32,14 @@ describe('Backup', () => {
   });
 });
 
+describe('ältere Daten', () => {
+  it('ergänzt die Ausrichtung bei Backups aus älteren Versionen', () => {
+    const old = { ...createBackup(DEFAULT_SETTINGS, [], []), farmStates: [{ farmId: 'a', favorite: true, doneLayers: [], checkedMaterials: [], notes: '', location: null, updatedAt: 1 }] };
+    const parsed = parseBackup(JSON.stringify(old));
+    expect(parsed.ok && parsed.backup.farmStates[0]!.orientation).toEqual({ rot: 0, mirror: false });
+  });
+});
+
 describe('mergeFarmStates', () => {
   it('nimmt pro Farm den neueren Stand und behält den Rest', () => {
     const current = [state('a', { notes: 'alt', updatedAt: 10 }), state('b', { favorite: true, updatedAt: 20 })];

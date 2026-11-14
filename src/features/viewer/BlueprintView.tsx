@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { blockIndex, paletteIndexAt } from '../../lib/structure';
+import { composeOrientation, isIdentity, NO_ORIENTATION, type Orientation } from '../../lib/transform';
 import { Button } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 import { BlockInfo } from './BlockInfo';
@@ -17,6 +18,8 @@ export function BlueprintView({
   onLayerChange,
   doneLayers,
   stepsForLayer,
+  orientation,
+  onOrientationChange,
 }: {
   blueprint: LoadedBlueprint;
   /** Nullbasiert. */
@@ -24,6 +27,8 @@ export function BlueprintView({
   onLayerChange: (layer: number) => void;
   doneLayers: readonly number[];
   stepsForLayer: string[];
+  orientation: Orientation;
+  onOrientationChange: (orientation: Orientation) => void;
 }) {
   const { structure, visuals, start, contents, markers } = blueprint;
   const canvas = useRef<LayerCanvasHandle>(null);
@@ -77,6 +82,55 @@ export function BlueprintView({
         <Compass className="ml-auto" />
       </div>
 
+      <div className="rounded-xl border border-line bg-surface p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="mr-auto text-sm font-semibold text-muted">Ausrichtung</h3>
+          <Button
+            aria-label="Bauplan nach links drehen"
+            onClick={() => {
+              setSelected(null);
+              onOrientationChange(composeOrientation(orientation, 'ccw'));
+            }}
+          >
+            ↺ Links
+          </Button>
+          <Button
+            aria-label="Bauplan nach rechts drehen"
+            onClick={() => {
+              setSelected(null);
+              onOrientationChange(composeOrientation(orientation, 'cw'));
+            }}
+          >
+            ↻ Rechts
+          </Button>
+          <Button
+            aria-pressed={orientation.mirror}
+            onClick={() => {
+              setSelected(null);
+              onOrientationChange(composeOrientation(orientation, 'mirror'));
+            }}
+            className={orientation.mirror ? 'border-accent text-accent' : ''}
+          >
+            ⇋ Spiegeln
+          </Button>
+        </div>
+        <p className="mt-2 text-xs leading-relaxed text-muted">
+          {isIdentity(orientation)
+            ? 'Der Bauplan steht wie in der Quelle. Drehe ihn, wenn die Farm bei dir in eine andere Richtung zeigen soll – die Pfeile der Blöcke drehen mit.'
+            : `Gedreht um ${orientation.rot * 90}°${orientation.mirror ? ', gespiegelt' : ''}. Norden bleibt oben; Ausrichtungen der Blöcke sind angepasst.`}
+          {!isIdentity(orientation) && (
+            <button type="button" className="ml-2 min-h-8 text-accent underline" onClick={() => onOrientationChange(NO_ORIENTATION)}>
+              Zurücksetzen
+            </button>
+          )}
+        </p>
+        {orientation.mirror && (
+          <p className="mt-1 text-xs leading-relaxed text-warn">
+            Achtung: Gespiegelte Redstone-Schaltungen verhalten sich in seltenen Fällen anders als das Original.
+          </p>
+        )}
+      </div>
+
       {selected && (
         <BlockInfo
           visual={visuals[paletteIndexAt(structure, selected.x, layer, selected.z)] ?? null}
@@ -97,6 +151,11 @@ export function BlueprintView({
               {s}
             </p>
           ))}
+          {!isIdentity(orientation) && (
+            <p className="mt-1.5 text-xs text-warn">
+              Du hast den Bauplan gedreht oder gespiegelt: Himmelsrichtungen im Text gelten für das Original.
+            </p>
+          )}
         </div>
       )}
 
