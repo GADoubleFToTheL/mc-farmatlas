@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "id": "handelshalle-bedrock-honderman",
+  "name": "Handelshalle, einfach (Honderman, Bedrock)",
+  "category": "villager-handel",
+  "outputs": [
+    "minecraft:emerald"
+  ],
+  "tags": [
+    "Villager",
+    "Dorfbewohner",
+    "Handel",
+    "Smaragde",
+    "Verzauberte Bücher",
+    "Honderman"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.0"
+    }
+  },
+  "difficulty": 3,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": null
+    },
+    "mobs": [
+      "Dorfbewohner (aus einer Zucht)",
+      "optional 1 Zombie für Rabatte"
+    ],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Jeder Dorfbewohner steht in einer eigenen Zelle neben seinem Arbeitsblock. So legst du den Beruf gezielt fest und kannst immer wieder mit ihm handeln. Viele Hallen haben zusätzlich eine Station, an der ein Zombie die Dorfbewohner ansteckt – nach dem Heilen geben sie Rabatt. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Erst handeln, dann ist der Beruf fest – vorher lässt er sich durch Umsetzen des Arbeitsblocks neu würfeln.",
+    "Dorfbewohner brauchen Zugang zu ihrem Arbeitsblock, um ihre Angebote aufzufüllen."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Easiest Villager Trading Hall in Minecraft Bedrock 26 - 1.21+",
+      "author": "Honderman",
+      "url": "https://www.youtube.com/watch?v=_gYR_DcEJRc"
+    },
+    {
+      "title": "Tutorial: Villager trading hall (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Villager_trading_hall",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

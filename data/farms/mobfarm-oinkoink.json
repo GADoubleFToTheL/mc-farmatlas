@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "id": "mobfarm-oinkoink",
+  "name": "Mob- und XP-Farm, ohne Spawner (OinkOink, Bedrock & Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:gunpowder",
+    "minecraft:bone",
+    "minecraft:arrow",
+    "minecraft:string",
+    "minecraft:rotten_flesh",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "XP",
+    "Schwarzpulver",
+    "Knochen",
+    "Creeper",
+    "Skelett",
+    "Zombie",
+    "Spinne",
+    "OinkOink"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.20"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.2"
+    }
+  },
+  "difficulty": 3,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": "Hoch in der Luft oder über dem Meer, damit rundherum keine anderen Spawn-Plätze liegen.",
+    "specialLocation": null,
+    "afk": {
+      "required": true,
+      "distance": "Monster erscheinen erst ab 24 Blöcken Abstand zu dir.",
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": "In Bedrock erscheinen Monster bei Simulationsdistanz 4 nur 24 bis 44 Blöcke von dir entfernt; viele Tutorials setzen Simulationsdistanz 4 voraus.",
+    "chunkAligned": false
+  },
+  "principle": "In einem völlig dunklen Raum erscheinen Monster von selbst. Wasser oder Falltüren befördern sie in einen Schacht. Am Boden sterben sie am Fallschaden – oder sie überleben mit wenig Leben, damit du sie für die Erfahrung mit einem Schlag erledigst. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Erscheinen Monster in Höhlen oder auf dem Boden rund um die Farm, bleibt der Turm leer.",
+    "Stehst du zu weit weg, verschwinden die Monster wieder, bevor sie unten ankommen."
+  ],
+  "editionNotes": {
+    "bedrock": "In einem völlig dunklen Raum erscheinen Monster von selbst. Wasser oder Falltüren befördern sie in einen Schacht. Am Boden sterben sie am Fallschaden – oder sie überleben mit wenig Leben, damit du sie für die Erfahrung mit einem Schlag erledigst.",
+    "java": "In einem völlig dunklen Raum erscheinen Monster von selbst. Wasser oder Falltüren befördern sie in einen Schacht. Am Boden sterben sie am Fallschaden – oder sie überleben mit wenig Leben, damit du sie für die Erfahrung mit einem Schlag erledigst."
+  },
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "EASIEST MOB XP Farm Minecraft Bedrock & Java 1.21/26.2+!",
+      "author": "OinkOink",
+      "url": "https://www.youtube.com/watch?v=ZYHoDqCL72g"
+    },
+    {
+      "title": "Tutorial: Mob farm (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Mob_farm",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

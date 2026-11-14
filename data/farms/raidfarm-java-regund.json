@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "id": "raidfarm-java-regund",
+  "name": "Raidfarm, einfach (Regund, Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:emerald",
+    "minecraft:totem_of_undying",
+    "minecraft:redstone",
+    "minecraft:gunpowder",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "Smaragde",
+    "Totem",
+    "Überfall",
+    "Regund"
+  ],
+  "editions": {
+    "java": {
+      "from": "26.1.2",
+      "to": "26.1.2"
+    }
+  },
+  "difficulty": 5,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Oft über dem Meer oder bei einem Plünderer-Außenposten – siehe Tutorial.",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [
+      "mindestens 1 Dorfbewohner als „Dorf“"
+    ],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Betrittst du mit dem Effekt „Böses Omen“ ein Dorf, beginnt ein Überfall in mehreren Wellen. Die Farm legt fest, wo die Angreifer erscheinen, und tötet sie dort automatisch oder führt sie dir zum Töten zu. So fallen Smaragde, Totems und weitere Beute in großer Menge an. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Den Überfall löst du mit einer Unheilsflasche aus; dafür brauchst du laufend Nachschub.",
+    "Stirbt der Dorfbewohner, endet der Überfall."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "EASIEST Raid Farm in Minecraft 26.1.2",
+      "author": "Regund",
+      "url": "https://www.youtube.com/watch?v=dhiX9fKysMk"
+    },
+    {
+      "title": "Tutorial: Raid farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Raid_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

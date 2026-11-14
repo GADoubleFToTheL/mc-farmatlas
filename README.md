@@ -15,7 +15,7 @@ Das Projekt entsteht in Phasen:
 | 0 | Grundgerüst, installierbare App, automatische Veröffentlichung | fertig |
 | 1 | Übersicht, Detailseite, Ebenen-Viewer, Materialliste, Bau-Modus, erste Farmen | fertig |
 | 2 | Import von Schematic-Dateien (`.litematic`, `.schem`, `.nbt`, `.mcstructure`) | fertig |
-| R | Recherche weiterer Farmen für Bedrock und Java | offen |
+| R | Recherche weiterer Farmen für Bedrock und Java ([Bericht](docs/recherche-bericht.md)) | fertig |
 | 3 | 3D-Vorschau, Drehen/Spiegeln, Export, Notizen | offen |
 
 ## Was die App kann

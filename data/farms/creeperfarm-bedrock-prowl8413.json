@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "id": "creeperfarm-bedrock-prowl8413",
+  "name": "Creeperfarm (Prowl8413, Bedrock)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:gunpowder"
+  ],
+  "tags": [
+    "Schwarzpulver",
+    "Raketen",
+    "TNT",
+    "Prowl8413"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "1.21.0"
+    }
+  },
+  "difficulty": 3,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": "Hoch in der Luft oder über dem Meer bauen.",
+    "specialLocation": null,
+    "afk": {
+      "required": true,
+      "distance": "Monster erscheinen erst ab 24 Blöcken Abstand zu dir.",
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": "In Bedrock erscheinen Monster bei Simulationsdistanz 4 nur 24 bis 44 Blöcke von dir entfernt; viele Tutorials setzen Simulationsdistanz 4 voraus.",
+    "chunkAligned": false
+  },
+  "principle": "Eine Mobfarm, deren Spawn-Flächen so gebaut sind, dass möglichst nur Creeper erscheinen: Niedrige Decken halten hohe Monster fern, ein Raster aus kleinen Blöcken auf dem Boden verhindert Spinnen. Die Creeper werden zu einer Tötungsstelle getrieben; Trichter sammeln das Schwarzpulver. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Jede Lücke im Spinnenschutz füllt die Farm mit Spinnen.",
+    "Spawn-Plätze in der Umgebung senken die Rate deutlich."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "*EASY* Creeper Gunpowder Farm For 1.21 Minecraft Bedrock | Block by Block Tutorial",
+      "author": "Prowl8413",
+      "url": "https://www.youtube.com/watch?v=NvN_rvGcn3o"
+    },
+    {
+      "title": "Tutorial: Creeper farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Creeper_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

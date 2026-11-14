@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "id": "waechterfarm-java-shocktor",
+  "name": "Wächterfarm, einfach (Shocktor, Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:prismarine_shard",
+    "minecraft:prismarine_crystals",
+    "minecraft:cod",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "Prismarin",
+    "Seelaterne",
+    "XP",
+    "Guardian",
+    "Shocktor"
+  ],
+  "editions": {
+    "java": {
+      "from": "26.2",
+      "to": "26.2"
+    }
+  },
+  "difficulty": 5,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": "Tiefer Ozean",
+    "yLevel": null,
+    "specialLocation": "Ozeanmonument",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": true,
+    "chunkNote": "Wächter erscheinen nur im Bereich des Monuments; die Farm muss genau darauf ausgerichtet sein."
+  },
+  "principle": "Wächter erscheinen nur im Wasser eines Ozeanmonuments. Die Farm nutzt diesen Bereich: Die Wächter fallen oder werden durch Wasserströme an einen Sammelpunkt gebracht und dort getötet. Trichter sammeln Prismarin und Fisch. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Erst die Großen Wächter besiegen, sonst bremst dich die Abbaulähmung beim Bauen.",
+    "Bauen unter Wasser kostet viel Zeit – Wasseratmung, Schwämme oder ein Aquisator helfen."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "How to build an EASY Guardian Farm in Minecraft 26.2",
+      "author": "Shocktor",
+      "url": "https://www.youtube.com/watch?v=OWRjrwof4Jc"
+    },
+    {
+      "title": "Tutorial: Guardian farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Guardian_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

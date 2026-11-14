@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "id": "goldfarm-bedrock-jc-playz",
+  "name": "Gold- und XP-Farm, einfach (JC Playz, Bedrock)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:gold_nugget",
+    "minecraft:gold_ingot",
+    "minecraft:rotten_flesh",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "Gold",
+    "XP",
+    "Piglin",
+    "JC Playz"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "26.10",
+      "to": "26.10"
+    }
+  },
+  "difficulty": 4,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld",
+      "nether"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Je nach Design im Nether oder mit Netherportalen in der Oberwelt – siehe Tutorial.",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": "In Bedrock erscheinen Monster bei Simulationsdistanz 4 nur 24 bis 44 Blöcke von dir entfernt; viele Tutorials setzen Simulationsdistanz 4 voraus.",
+    "chunkAligned": false
+  },
+  "principle": "Zombifizierte Piglins erscheinen im Nether und in der Oberwelt an Netherportalen. Die Farm lässt möglichst viele entstehen, führt sie an eine Sammelstelle und tötet sie dort – oder lässt sie mit wenig Leben übrig, damit du sie für die Erfahrung selbst erledigst. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Greifst du einen Piglin an, werden alle in der Nähe feindlich – den Tötungsplatz genau wie im Tutorial bauen."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "BEST SIMPLE 26.1+ GOLD AND XP FARM TUTORIAL in Minecraft Bedrock (MCPE/Xbox/PS/Switch/PC)",
+      "author": "JC Playz",
+      "url": "https://www.youtube.com/watch?v=zRSjt_Ex33M"
+    },
+    {
+      "title": "Tutorial: Zombified piglin farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Zombified_piglin_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

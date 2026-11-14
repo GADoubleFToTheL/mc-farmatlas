@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "id": "goldfarm-bedrock-pixelated-purgatory",
+  "name": "Gold- und XP-Farm, kompakt (Pixelated Purgatory, Bedrock)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:gold_nugget",
+    "minecraft:gold_ingot",
+    "minecraft:rotten_flesh",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "Gold",
+    "XP",
+    "Piglin",
+    "Pixelated Purgatory"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "1.21.0"
+    }
+  },
+  "difficulty": 4,
+  "rate": {
+    "entries": [
+      {
+        "item": "minecraft:gold_nugget",
+        "perHour": 600
+      }
+    ],
+    "source": 0,
+    "note": "Angabe aus dem Videotitel, nicht nachgemessen."
+  },
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld",
+      "nether"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Je nach Design im Nether oder mit Netherportalen in der Oberwelt – siehe Tutorial.",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": "In Bedrock erscheinen Monster bei Simulationsdistanz 4 nur 24 bis 44 Blöcke von dir entfernt; viele Tutorials setzen Simulationsdistanz 4 voraus.",
+    "chunkAligned": false
+  },
+  "principle": "Zombifizierte Piglins erscheinen im Nether und in der Oberwelt an Netherportalen. Die Farm lässt möglichst viele entstehen, führt sie an eine Sammelstelle und tötet sie dort – oder lässt sie mit wenig Leben übrig, damit du sie für die Erfahrung selbst erledigst. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Greifst du einen Piglin an, werden alle in der Nähe feindlich – den Tötungsplatz genau wie im Tutorial bauen."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Zombie Piglin GOLD FARM TUTORIAL in Minecraft Bedrock 1.21 | 600 Gold Nuggets/Hour | EASY & COMPACT",
+      "author": "Pixelated Purgatory",
+      "url": "https://www.youtube.com/watch?v=ppia3i_r7AU"
+    },
+    {
+      "title": "Tutorial: Zombified piglin farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Zombified_piglin_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

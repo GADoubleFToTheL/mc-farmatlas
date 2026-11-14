@@ -24,7 +24,7 @@ function MissingBlueprint({ farmId }: { farmId: string }) {
   return (
     <div className="rounded-xl border border-warn/40 bg-warn/10 p-4">
       <p className="flex items-center gap-2 font-semibold">
-        <Icon name="warn" className="text-warn" />
+        <Icon name="warn" className="size-5 shrink-0 text-warn" />
         Bauplan fehlt
       </p>
       <p className="mt-1.5 text-sm leading-relaxed">

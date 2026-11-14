@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "id": "mobfarm-bedrock-jc-playz",
+  "name": "Mob- und XP-Farm, ohne Spawner (JC Playz, Bedrock)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:gunpowder",
+    "minecraft:bone",
+    "minecraft:arrow",
+    "minecraft:string",
+    "minecraft:rotten_flesh",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "XP",
+    "Schwarzpulver",
+    "Knochen",
+    "Creeper",
+    "Skelett",
+    "Zombie",
+    "Spinne",
+    "JC Playz"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "26.10",
+      "to": "26.10"
+    }
+  },
+  "difficulty": 3,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": "Hoch in der Luft oder über dem Meer, damit rundherum keine anderen Spawn-Plätze liegen.",
+    "specialLocation": null,
+    "afk": {
+      "required": true,
+      "distance": "Monster erscheinen erst ab 24 Blöcken Abstand zu dir.",
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": "In Bedrock erscheinen Monster bei Simulationsdistanz 4 nur 24 bis 44 Blöcke von dir entfernt; viele Tutorials setzen Simulationsdistanz 4 voraus.",
+    "chunkAligned": false
+  },
+  "principle": "In einem völlig dunklen Raum erscheinen Monster von selbst. Wasser oder Falltüren befördern sie in einen Schacht. Am Boden sterben sie am Fallschaden – oder sie überleben mit wenig Leben, damit du sie für die Erfahrung mit einem Schlag erledigst. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Erscheinen Monster in Höhlen oder auf dem Boden rund um die Farm, bleibt der Turm leer.",
+    "Stehst du zu weit weg, verschwinden die Monster wieder, bevor sie unten ankommen."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "NEW SIMPLE 26.1+ MOB AND XP FARM TUTORIAL in Minecraft Bedrock (No Spawner)",
+      "author": "JC Playz",
+      "url": "https://www.youtube.com/watch?v=JIo9BcjuZZU"
+    },
+    {
+      "title": "Tutorial: Mob farm (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Mob_farm",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

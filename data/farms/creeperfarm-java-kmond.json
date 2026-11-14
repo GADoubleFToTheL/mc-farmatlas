@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "id": "creeperfarm-java-kmond",
+  "name": "Creeperfarm, einfach (Kmond, Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:gunpowder"
+  ],
+  "tags": [
+    "Schwarzpulver",
+    "Raketen",
+    "TNT",
+    "Kmond"
+  ],
+  "editions": {
+    "java": {
+      "from": "1.21",
+      "to": "1.21"
+    }
+  },
+  "difficulty": 3,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": "Hoch in der Luft oder über dem Meer bauen.",
+    "specialLocation": null,
+    "afk": {
+      "required": true,
+      "distance": "Monster erscheinen 24 bis 128 Blöcke von dir entfernt.",
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Eine Mobfarm, deren Spawn-Flächen so gebaut sind, dass möglichst nur Creeper erscheinen: Falltüren an der Decke machen den Raum zu niedrig für Zombies und Skelette, ein Raster aus Teppichen oder Knöpfen verhindert Spinnen. Die Creeper werden zu einer Tötungsstelle getrieben; Trichter sammeln das Schwarzpulver. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Jede Lücke im Spinnenschutz füllt die Farm mit Spinnen.",
+    "Spawn-Plätze in der Umgebung senken die Rate deutlich."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Easy Creeper Farm - Minecraft 1.21+ Tutorial",
+      "author": "Kmond",
+      "url": "https://www.youtube.com/watch?v=HUiws8Nd83Q"
+    },
+    {
+      "title": "Tutorial: Creeper farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Creeper_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

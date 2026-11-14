@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "id": "goldfarm-java-kmond",
+  "name": "Gold- und XP-Farm (Kmond, Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:gold_nugget",
+    "minecraft:gold_ingot",
+    "minecraft:rotten_flesh",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "Gold",
+    "XP",
+    "Piglin",
+    "Kmond"
+  ],
+  "editions": {
+    "java": {
+      "from": "1.21",
+      "to": "1.21"
+    }
+  },
+  "difficulty": 4,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld",
+      "nether"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Je nach Design über dem Netherdach oder mit Netherportalen in der Oberwelt – siehe Tutorial.",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Zombifizierte Piglins erscheinen im Nether und in der Oberwelt an Netherportalen. Die Farm lässt möglichst viele entstehen – etwa auf Magmablöcken über dem Netherdach oder an großen Portalen –, führt sie an eine Sammelstelle und tötet sie dort. Tötest du sie selbst, gibt es zusätzlich Erfahrung. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Greifst du einen Piglin an, werden alle in der Nähe feindlich – den Tötungsplatz genau wie im Tutorial bauen.",
+    "Der Videotitel nennt „21.000+ pro Stunde“, ohne zu sagen, welche Items gemeint sind."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Gold Farm - 21,000+ Per Hour - Minecraft 1.21+ Tutorial",
+      "author": "Kmond",
+      "url": "https://www.youtube.com/watch?v=gB8wSuAhfNs"
+    },
+    {
+      "title": "Tutorial: Zombified piglin farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Zombified_piglin_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

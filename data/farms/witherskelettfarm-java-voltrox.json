@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "id": "witherskelettfarm-java-voltrox",
+  "name": "Witherskelett-Farm (Voltrox, Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:wither_skeleton_skull",
+    "minecraft:coal",
+    "minecraft:bone",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "Wither",
+    "Schädel",
+    "Leuchtfeuer",
+    "Voltrox"
+  ],
+  "editions": {
+    "java": {
+      "from": "1.21",
+      "to": "1.21"
+    }
+  },
+  "difficulty": 5,
+  "rate": {
+    "entries": [
+      {
+        "item": "minecraft:wither_skeleton_skull",
+        "perHour": 130
+      }
+    ],
+    "source": 0,
+    "note": "Angabe aus dem Videotitel, nicht nachgemessen."
+  },
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "nether"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Netherfestung",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": true,
+    "chunkNote": "Witherskelette erscheinen nur im Bereich der Festung; die Plattformen müssen darin liegen."
+  },
+  "principle": "Witherskelette erscheinen nur in Netherfestungen. Die Farm bietet ihnen dort Plattformen zum Erscheinen und verhindert andere Spawns in der Umgebung. Die Skelette werden an einen Punkt gelockt oder geschoben und getötet. Schädel fallen nur selten, mit der Verzauberung Plünderung häufiger. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Die Umgebung muss gegen andere Spawns gesichert werden, sonst bleibt die Rate niedrig.",
+    "Die Lage der Festung entscheidet – nicht jede eignet sich gleich gut."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Minecraft 1.21 Wither Skeleton Farm - 130+ Per Hour",
+      "author": "Voltrox",
+      "url": "https://www.youtube.com/watch?v=YilwUD3nh7I"
+    },
+    {
+      "title": "Tutorial: Wither skeleton farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Wither_skeleton_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

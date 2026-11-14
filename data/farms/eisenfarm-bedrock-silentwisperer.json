@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "id": "eisenfarm-bedrock-silentwisperer",
+  "name": "Eisenfarm, erweiterbar (silentwisperer, Bedrock)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:iron_ingot",
+    "minecraft:poppy"
+  ],
+  "tags": [
+    "Eisen",
+    "Golem",
+    "silentwisperer"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "1.21.0"
+    }
+  },
+  "difficulty": 3,
+  "rate": {
+    "entries": [
+      {
+        "item": "minecraft:iron_ingot",
+        "perHour": 440
+      }
+    ],
+    "source": 0,
+    "note": "Angabe aus dem Videotitel, nicht nachgemessen."
+  },
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Weit weg von anderen Dörfern, Betten und Glocken, damit ein eigenes Dorf entsteht.",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [
+      "mindestens 10 Dorfbewohner (viele Designs nutzen 20)",
+      "20 Betten und passende Arbeitsblöcke"
+    ],
+    "simulationDistance": "Der Dorfmittelpunkt muss innerhalb der Simulationsdistanz liegen.",
+    "chunkAligned": false
+  },
+  "principle": "In Bedrock erscheinen Eisengolems in einem Dorf mit mindestens 20 Betten und 10 Dorfbewohnern, und zwar in einem Bereich von 17 × 13 × 17 Blöcken um den Dorfmittelpunkt. Die Farm hält ein solches Dorf auf engem Raum. Die Golems werden von Wasser zu einer Stelle mit Lava getrieben und sterben dort; Trichter sammeln Eisenbarren und Mohn. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Drei Viertel der Dorfbewohner müssen in den letzten 20 Minuten an ihrem Arbeitsblock gearbeitet haben (Nichtsnutze zählen nicht mit).",
+    "Jeder Dorfbewohner muss mit einem Bett verbunden sein.",
+    "Über der Spawn-Fläche darf nichts den Golem behindern."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Minecraft Bedrock: Upgradable IRON FARM! Simple/Working! 440+ Iron/Hour! 1.21 Update Tutorial",
+      "author": "silentwisperer",
+      "url": "https://www.youtube.com/watch?v=3BhlLIIpRh4"
+    },
+    {
+      "title": "Tutorial: Iron golem farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Iron_golem_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

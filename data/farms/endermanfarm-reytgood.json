@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "id": "endermanfarm-reytgood",
+  "name": "Endermanfarm (ReytGood, Bedrock & Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:ender_pearl",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "XP",
+    "Enderperle",
+    "ReytGood"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "26.30",
+      "to": "26.30"
+    },
+    "java": {
+      "from": "26.3",
+      "to": "26.3"
+    }
+  },
+  "difficulty": 4,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "end"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Im Ende, weit weg von der Hauptinsel über dem Nichts",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du stehst am Tötungsplatz und erledigst die Endermen für die Erfahrung selbst."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Im Ende erscheinen fast nur Endermen. Baust du eine Plattform weit draußen über dem Nichts, ist sie der einzige Ort zum Erscheinen. Die Endermen werden von der Plattform gelockt, fallen in einen Schacht und überleben mit wenig Leben, sodass du sie mit einem Schlag tötest. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Endermen teleportieren sich auf jede freie Fläche in der Nähe – Wege und Brücken überdachen oder aus Blöcken bauen, auf denen sie nicht landen.",
+    "Nicht in die Augen sehen, bevor der Tötungsplatz fertig ist."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "NEW Enderman XP Farm Minecraft 26.3+ [JAVA + BEDROCK]",
+      "author": "ReytGood",
+      "url": "https://www.youtube.com/watch?v=JmGzGZkclY8"
+    },
+    {
+      "title": "Tutorial: Enderman farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Enderman_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

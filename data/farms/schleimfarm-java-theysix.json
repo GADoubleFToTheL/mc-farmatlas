@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "id": "schleimfarm-java-theysix",
+  "name": "Schleimfarm, ohne Schleim-Chunk (TheySix, Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:slime_ball"
+  ],
+  "tags": [
+    "Schleimball",
+    "Klebriger Kolben",
+    "Slime",
+    "TheySix"
+  ],
+  "editions": {
+    "java": {
+      "from": "1.21",
+      "to": "1.21"
+    }
+  },
+  "difficulty": 3,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": "In Schleim-Chunks unter Y 40",
+    "specialLocation": "Schleim-Chunk (unter Y 40) – außer das Tutorial sagt ausdrücklich etwas anderes.",
+    "afk": {
+      "required": true,
+      "distance": "Mindestens 24 Blöcke Abstand zu den Spawn-Plattformen.",
+      "note": null
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": true,
+    "chunkNote": "Die Plattformen müssen genau in einem Schleim-Chunk liegen."
+  },
+  "principle": "Schleime erscheinen in bestimmten Chunks unter der Erde auch bei Licht. In einem solchen Chunk baust du beleuchtete Plattformen übereinander. Die Schleime werden angelockt oder fallen in einen Schacht, werden dort zerkleinert und getötet; Trichter sammeln die Schleimbälle. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Der falsche Chunk: Vor dem Bau prüfen, ob dort wirklich Schleime erscheinen.",
+    "Plattformen ausleuchten, sonst erscheinen dort andere Monster.",
+    "Laut Videotitel kommt dieses Design ohne Schleim-Chunk aus; die Voraussetzungen unten gelten dann nicht."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Minecraft Slime Farm 1.21 - NO SLIME CHUNKS - SIMPLE EASY!",
+      "author": "TheySix",
+      "url": "https://www.youtube.com/watch?v=j-gKv-LCGOg"
+    },
+    {
+      "title": "Tutorial: Slime farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Slime_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

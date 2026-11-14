@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "id": "eisenfarm-java-fancycrafts",
+  "name": "Eisenfarm, Starterfarm (FancyCrafts, Java)",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:iron_ingot",
+    "minecraft:poppy"
+  ],
+  "tags": [
+    "Eisen",
+    "Golem",
+    "FancyCrafts"
+  ],
+  "editions": {
+    "java": {
+      "from": "26.3",
+      "to": "26.3"
+    }
+  },
+  "difficulty": 3,
+  "rate": {
+    "entries": [
+      {
+        "item": "minecraft:iron_ingot",
+        "perHour": 300
+      }
+    ],
+    "source": 0,
+    "note": "Angabe aus dem Videotitel, nicht nachgemessen."
+  },
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Abseits anderer Dorfbewohner und Golems bauen.",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz, den das Tutorial vorgibt."
+    },
+    "mobs": [
+      "mindestens 3 Dorfbewohner",
+      "1 Zombie (je nach Design)"
+    ],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "In Java rufen Dorfbewohner einen Eisengolem herbei, wenn mindestens drei von ihnen in Panik geraten – die Farm zeigt ihnen dafür regelmäßig einen Zombie. Der Golem erscheint in der Nähe, wird von Wasser zu einer Stelle mit Lava getrieben und stirbt dort; Trichter sammeln Eisenbarren und Mohn. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Die Dorfbewohner müssen in den letzten 20 Minuten geschlafen haben – sie brauchen Betten und Ruhe vor dem Zombie.",
+    "Steht ein Golem in der Nähe der Dorfbewohner, erscheint kein neuer."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Minecraft Iron Farm Tutorial 26.3+ | STARTER FARM 300+/H",
+      "author": "FancyCrafts",
+      "url": "https://www.youtube.com/watch?v=ZqyyzNIKtgU"
+    },
+    {
+      "title": "Tutorial: Iron golem farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Iron_golem_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "id": "item-sortierer-bedrock-jc-playz",
+  "name": "Item-Sortierer (JC Playz, Bedrock)",
+  "category": "lager-sortierung",
+  "outputs": [],
+  "tags": [
+    "Sortieren",
+    "Lager",
+    "Truhen",
+    "Trichter",
+    "Sorter",
+    "JC Playz"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "26.10",
+      "to": "26.10"
+    }
+  },
+  "difficulty": 3,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": null
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Ein Trichter mit Filter-Items lässt nur eine Itemsorte durch. Ein Komparator misst seinen Füllstand und gibt über eine Redstone-Fackel den Trichter darunter frei, sobald ein passendes Item ankommt. Viele solche Module nebeneinander sortieren jede Sorte in ihre eigene Truhe. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Im Filtertrichter müssen genau die Mengen aus dem Tutorial liegen, sonst läuft er über oder leer.",
+    "Nicht stapelbare Items lassen sich so nicht sortieren.",
+    "Redstone benachbarter Module darf sich nicht berühren."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "EASY 26.1+ AUTOMATIC ITEM SORTER TUTORIAL in Minecraft Bedrock (MCPE/Xbox/PS4/Nintendo Switch/PC)",
+      "author": "JC Playz",
+      "url": "https://www.youtube.com/watch?v=-FtUmkH3elk"
+    },
+    {
+      "title": "Tutorial: Hopper (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Hopper",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

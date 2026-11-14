@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "id": "dorfbewohner-zucht-fancycrafts",
+  "name": "Dorfbewohner-Zucht (FancyCrafts, Bedrock & Java)",
+  "category": "villager-handel",
+  "outputs": [],
+  "tags": [
+    "Villager",
+    "Dorfbewohner",
+    "Zucht",
+    "Breeder",
+    "FancyCrafts"
+  ],
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.30"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "difficulty": 2,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Die Zucht läuft nur, solange der Bereich geladen ist."
+    },
+    "mobs": [
+      "mindestens 2 Dorfbewohner"
+    ],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Dorfbewohner vermehren sich, wenn sie genug Nahrung haben und freie Betten vorhanden sind. Die Farm hält zwei oder mehr Dorfbewohner bei Betten und einem Feld. Die Kinder laufen zu den freien Betten, fallen dabei in einen Kanal und werden abtransportiert. Die genaue Bauweise zeigt das verlinkte Tutorial.",
+  "steps": [],
+  "pitfalls": [
+    "Ohne freie, erreichbare Betten entstehen keine Kinder.",
+    "Die Dorfbewohner brauchen Nahrung (Brot, Karotten, Kartoffeln oder Rote Bete)."
+  ],
+  "blueprint": null,
+  "blueprintOrigin": null,
+  "extras": [],
+  "sources": [
+    {
+      "title": "Minecraft Villager Breeder 1.21/26.3+ (Bedrock & Java) – Easy & Efficient",
+      "author": "FancyCrafts",
+      "url": "https://www.youtube.com/watch?v=Gq6IAgCpFnY"
+    },
+    {
+      "title": "Tutorial: Villager farming (Mechanik)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Villager_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}
