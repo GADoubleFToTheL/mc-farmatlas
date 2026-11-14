@@ -9,7 +9,6 @@ import { Icon } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
 import { MaterialsPanel } from '../materials/MaterialsPanel';
 import { BlockInfo } from '../viewer/BlockInfo';
-import { Compass } from '../viewer/Compass';
 import { LayerCanvas, type CellPos, type LayerCanvasHandle } from '../viewer/LayerCanvas';
 import { LayerStepper } from '../viewer/LayerStepper';
 import { Legend } from '../viewer/Legend';
@@ -143,7 +142,6 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
           lockScroll
           className="absolute inset-0 block size-full"
         />
-        <Compass />
         {highlightKey && highlight && (
           <button
             type="button"

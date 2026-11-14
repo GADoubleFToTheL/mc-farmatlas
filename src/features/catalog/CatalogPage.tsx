@@ -62,9 +62,15 @@ export function CatalogPage() {
             { value: 'alle', label: 'Alle' },
           ]}
         />
-        <Chip active={state.favoritesOnly} onClick={() => setCatalogState({ favoritesOnly: !state.favoritesOnly })}>
-          <Icon name="star" className="size-4" filled={state.favoritesOnly} />
-          Favoriten
+        <Chip
+          active={state.favoritesOnly}
+          onClick={() => setCatalogState({ favoritesOnly: !state.favoritesOnly })}
+          aria-label="Nur Favoriten anzeigen"
+          title="Nur Favoriten"
+          className="px-3.5"
+        >
+          <Icon name="star" className="size-5" filled={state.favoritesOnly} />
+          <span className="max-sm:sr-only">Favoriten</span>
         </Chip>
         <Button onClick={() => setFilterOpen(true)} className="ml-auto">
           <Icon name="filter" />

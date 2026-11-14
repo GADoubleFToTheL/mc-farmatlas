@@ -7,8 +7,8 @@ import { paletteIndexAt, type Structure } from '../../lib/structure';
 import { drawBlock } from './draw';
 import type { BlockVisual } from './visuals';
 
-const RULER_LEFT = 28;
-const RULER_TOP = 22;
+const RULER_LEFT = 30;
+const RULER_TOP = 26;
 const MAX_FIT_CELL = 56;
 const MAX_CELL = 110;
 
@@ -224,8 +224,19 @@ export function LayerCanvas({
       ctx.fillStyle = rel === 0 ? colors.accent : colors.muted;
       ctx.fillText(String(rel), RULER_LEFT - 5, py);
     }
+    // Ecke: Kompass – Norden ist immer oben
     ctx.fillStyle = colors.bg;
     ctx.fillRect(0, 0, RULER_LEFT, RULER_TOP);
+    ctx.fillStyle = colors.accent;
+    ctx.beginPath();
+    ctx.moveTo(RULER_LEFT / 2, 2);
+    ctx.lineTo(RULER_LEFT / 2 + 5, 9);
+    ctx.lineTo(RULER_LEFT / 2 - 5, 9);
+    ctx.closePath();
+    ctx.fill();
+    ctx.font = '700 12px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('N', RULER_LEFT / 2, 18);
   }, []);
 
   const requestDraw = useCallback(() => {
@@ -408,7 +419,8 @@ export function LayerCanvas({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const onWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey && !isZoomed() && e.deltaY > 0) return; // Seite normal scrollen lassen
+      // Ohne Strg scrollt das Mausrad die Seite – außer es ist bereits hineingezoomt.
+      if (!e.ctrlKey && !e.metaKey && !isZoomed()) return;
       e.preventDefault();
       const rect = canvas.getBoundingClientRect();
       zoomAt(e.clientX - rect.left, e.clientY - rect.top, Math.exp(-e.deltaY * 0.0022));

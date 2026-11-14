@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": {
+    "entries": [
+      {
+        "item": "minecraft:lava_bucket",
+        "perHour": 9
+      }
+    ],
+    "source": 0,
+    "note": "Für die drei Kessel dieses Plans: Laut Wiki füllt sich ein Kessel im Schnitt etwa alle 19 Minuten, einzelne Füllungen schwanken stark."
+  },
+  "status": "ungeprueft",
+  "steps": [
+    {
+      "text": "Stelle die drei Kessel nebeneinander auf. Der westliche ist der Startblock.",
+      "layers": [
+        1
+      ]
+    },
+    {
+      "text": "Baue zwei Blöcke über dem Boden die Plattform aus festen Blöcken. Nimm nicht brennbares Material wie Stein.",
+      "layers": [
+        3
+      ]
+    },
+    {
+      "text": "Hänge unter die drei mittleren Blöcke je einen spitzen Tropfstein, genau über die Kessel.",
+      "layers": [
+        2
+      ]
+    },
+    {
+      "text": "Setze den Rand aus Blöcken und fülle die drei Felder in der Mitte mit je einer Lavaquelle.",
+      "layers": [
+        4
+      ]
+    }
+  ],
+  "pitfalls": [
+    "Zwischen Tropfsteinspitze und Kessel darf nur Luft sein, und der Kessel darf höchstens 10 Blöcke unter der Spitze stehen.",
+    "Fließende Lava reicht nicht: Über jedem Tropfstein muss eine Lavaquelle liegen.",
+    "Der Tropfstein muss an der Unterseite genau des Blocks hängen, auf dem die Lava liegt.",
+    "Brennbare Blöcke in der Nähe fangen Feuer – baue mit Stein."
+  ],
+  "blueprint": {
+    "format": "grid",
+    "stateSyntax": "java",
+    "start": {
+      "x": 1,
+      "y": 0,
+      "z": 1
+    },
+    "palette": {
+      "K": "minecraft:cauldron",
+      "T": "minecraft:pointed_dripstone[thickness=tip,vertical_direction=down]",
+      "S": "minecraft:stone",
+      "L": "minecraft:lava[level=0]"
+    },
+    "layers": [
+      [
+        ".....",
+        ".KKK.",
+        "....."
+      ],
+      [
+        ".....",
+        ".TTT.",
+        "....."
+      ],
+      [
+        ".SSS.",
+        "SSSSS",
+        ".SSS."
+      ],
+      [
+        ".SSS.",
+        "SLLLS",
+        ".SSS."
+      ]
+    ]
+  },
+  "extras": [
+    {
+      "item": "minecraft:bucket",
+      "count": 1,
+      "note": "zum Abschöpfen der Lava"
+    }
+  ],
+  "id": "lavafarm-tropfstein",
+  "name": "Lavafarm (Tropfstein und Kessel)",
+  "category": "rohstoffe",
+  "outputs": [
+    "minecraft:lava_bucket"
+  ],
+  "tags": [
+    "Lava",
+    "Brennstoff",
+    "unendlich"
+  ],
+  "difficulty": 1,
+  "requirements": {
+    "dimension": [
+      "overworld",
+      "nether",
+      "end"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Die Kessel füllen sich nur, solange die Farm innerhalb der Simulationsdistanz liegt."
+    },
+    "mobs": [],
+    "simulationDistance": "Die Farm muss innerhalb der Simulationsdistanz liegen.",
+    "chunkAligned": false
+  },
+  "principle": "Hängt ein spitzer Tropfstein unter einem Block, auf dem eine Lavaquelle liegt, tropft Lava herunter. Steht darunter ein leerer Kessel, füllt er sich nach einiger Zeit vollständig. Mit einem Eimer schöpfst du die Lava ab; die Quelle oben wird dabei nie verbraucht. Jeder Kessel braucht seinen eigenen Tropfstein und seine eigene Lavaquelle.",
+  "blueprintOrigin": {
+    "kind": "standarddesign",
+    "note": "Eigene Anordnung nach der im Wiki beschriebenen Mechanik (Lavaquelle – Block – hängender Tropfstein – Kessel). Das Wiki zeigt dafür kein Schema. Noch nicht im Spiel getestet."
+  },
+  "sources": [
+    {
+      "title": "Pointed Dripstone – Abschnitt „Cauldrons“",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Pointed_Dripstone",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": null,
+  "status": "ungeprueft",
+  "steps": [],
+  "pitfalls": [],
+  "blueprint": null,
+  "extras": [],
+  "blueprintOrigin": null,
+  "id": "witherskelettfarm",
+  "name": "Witherskelett-Farm",
+  "category": "mobs-xp",
+  "outputs": [
+    "minecraft:wither_skeleton_skull",
+    "minecraft:coal",
+    "minecraft:bone",
+    "farmatlas:xp"
+  ],
+  "tags": [
+    "Wither",
+    "Schädel",
+    "Leuchtfeuer"
+  ],
+  "difficulty": 5,
+  "requirements": {
+    "dimension": [
+      "nether"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": "Netherfestung",
+    "afk": {
+      "required": true,
+      "distance": null,
+      "note": "Du wartest am AFK-Platz der Farm."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": true,
+    "chunkNote": "Witherskelette erscheinen nur im Bereich der Festung; die Plattformen müssen darin liegen."
+  },
+  "principle": "Witherskelette erscheinen nur in Netherfestungen. Die Farm bietet ihnen dort Plattformen zum Erscheinen und verhindert alle anderen Spawns in der Umgebung. Die Skelette werden an einen Punkt gelockt oder geschoben und getötet. Schädel fallen nur selten, mit der Verzauberung Plünderung häufiger.",
+  "editionNotes": {
+    "java": null,
+    "bedrock": "Die Spawn-Regeln in Festungen unterscheiden sich von Java. Nimm nur ein Design, das ausdrücklich für Bedrock gebaut wurde."
+  },
+  "sources": [
+    {
+      "title": "Tutorial: Wither skeleton farming",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Wither_skeleton_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

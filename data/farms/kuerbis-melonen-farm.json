@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": null,
+  "status": "ungeprueft",
+  "steps": [],
+  "pitfalls": [
+    "Im Feld der Pflanze muss Lichtlevel 9 oder mehr herrschen.",
+    "Ein Beobachter direkt über der Pflanze verhindert das Wachstum.",
+    "Sieht der Beobachter auch den Kolbenarm, löst die Farm in einer Dauerschleife aus."
+  ],
+  "blueprint": null,
+  "extras": [],
+  "blueprintOrigin": null,
+  "id": "kuerbis-melonen-farm",
+  "name": "Kürbis- und Melonenfarm (automatisch)",
+  "category": "pflanzen",
+  "outputs": [
+    "minecraft:pumpkin",
+    "minecraft:melon_slice"
+  ],
+  "tags": [
+    "Melone",
+    "Kürbis",
+    "Handel"
+  ],
+  "difficulty": 3,
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Wächst nur in geladenen Chunks innerhalb der Simulationsdistanz."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Die Pflanze steht auf Ackerboden und lässt ihre Frucht auf einem benachbarten Erd- oder Grasblock wachsen. Ein Kolben, der in die Frucht stößt, zerbricht sie zu Items. Automatische Farmen erkennen die neue Frucht mit einem Beobachter und sammeln die Items mit Trichtern oder einer Trichterlore unter dem Feld.",
+  "sources": [
+    {
+      "title": "Tutorial: Pumpkin and melon farming",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Pumpkin_and_melon_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

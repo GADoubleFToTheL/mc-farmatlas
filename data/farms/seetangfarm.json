@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": null,
+  "status": "ungeprueft",
+  "steps": [],
+  "pitfalls": [
+    "Seetang legt beim Pflanzen zufällig fest, wie hoch er höchstens wird. Manche Pflanzen bleiben deshalb kurz.",
+    "Wächst der Seetang bis in das fließende Wasser oben, unterbricht er den Strom."
+  ],
+  "blueprint": null,
+  "extras": [],
+  "blueprintOrigin": null,
+  "id": "seetangfarm",
+  "name": "Seetangfarm (Kolben)",
+  "category": "pflanzen",
+  "outputs": [
+    "minecraft:kelp"
+  ],
+  "tags": [
+    "Brennstoff",
+    "Getrockneter Seetang",
+    "Knochenmehl"
+  ],
+  "difficulty": 3,
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Wächst nur in geladenen Chunks innerhalb der Simulationsdistanz."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Seetang wächst in einer Wassersäule nach oben. Ein Kolben bricht ihn am zweiten Block ab, der unterste Block bleibt stehen und wächst nach. Oben spült fließendes Wasser die Items in einen Trichter.",
+  "editionNotes": {
+    "java": "Ein Beobachter kann das Wachstum erkennen. Bleibt eine Pflanze bei zwei Blöcken stehen, löst er aber nie aus – eine Uhr oder ein Schalter als Reserve ist nötig.",
+    "bedrock": null
+  },
+  "sources": [
+    {
+      "title": "Tutorial: Kelp farming",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Kelp_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

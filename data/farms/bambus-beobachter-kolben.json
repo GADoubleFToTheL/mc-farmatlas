@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": null,
+  "status": "ungeprueft",
+  "steps": [
+    {
+      "text": "Setze die Truhe. Sie ist der Startblock und liegt später unter dem Trichter – halte den Zugang zu ihr frei.",
+      "layers": [
+        1
+      ]
+    },
+    {
+      "text": "Setze den Trichter auf die Truhe (schleichen und auf die Truhe klicken) und lege westlich davon den Boden des Wasserkanals.",
+      "layers": [
+        2
+      ]
+    },
+    {
+      "text": "Baue die Glaswände, lege die Erdreihe und setze die Wasserquelle ganz im Westen des Kanals. Das Wasser fließt genau bis über den Trichter.",
+      "layers": [
+        3
+      ]
+    },
+    {
+      "text": "Pflanze Bambus auf jeden Erdblock, ziehe die Glaswand höher und setze die Stützreihe hinter den Bambus.",
+      "layers": [
+        4
+      ]
+    },
+    {
+      "text": "Setze die Kolben mit der Stoßfläche zum Bambus (nach Norden) und dahinter eine Reihe fester Blöcke.",
+      "layers": [
+        5
+      ]
+    },
+    {
+      "text": "Setze die Beobachter auf die Kolben, Gesicht zum Bambus (nach Norden). Lege Redstone-Staub auf die festen Blöcke dahinter.",
+      "layers": [
+        6
+      ]
+    }
+  ],
+  "pitfalls": [
+    "Zu dunkel: Die Spitze des Bambus braucht Lichtlevel 9 oder mehr. Unter freiem Himmel passt das, in Innenräumen brauchst du Lichtquellen.",
+    "Beobachter falsch herum: Das Gesicht muss zum Bambus zeigen, der rote Punkt nach hinten zum Redstone-Staub.",
+    "Die Blöcke unter dem Redstone-Staub müssen fest und undurchsichtig sein (kein Glas), sonst bekommen die Kolben keinen Strom.",
+    "Nicht verlustfrei: Ein Teil des Bambus bleibt auf der Erde liegen und muss von Hand eingesammelt werden."
+  ],
+  "blueprint": {
+    "format": "grid",
+    "stateSyntax": "java",
+    "start": {
+      "x": 8,
+      "y": 0,
+      "z": 1
+    },
+    "palette": {
+      "1": "minecraft:water[level=1]",
+      "2": "minecraft:water[level=2]",
+      "3": "minecraft:water[level=3]",
+      "4": "minecraft:water[level=4]",
+      "5": "minecraft:water[level=5]",
+      "6": "minecraft:water[level=6]",
+      "7": "minecraft:water[level=7]",
+      "T": "minecraft:chest[facing=north]",
+      "H": "minecraft:hopper[facing=down]",
+      "S": "minecraft:stone",
+      "G": "minecraft:glass",
+      "D": "minecraft:dirt",
+      "W": "minecraft:water[level=0]",
+      "B": "minecraft:bamboo",
+      "P": "minecraft:piston[facing=north]",
+      "O": "minecraft:observer[facing=north]",
+      "R": "minecraft:redstone_wire"
+    },
+    "layers": [
+      [
+        "..........",
+        "........T.",
+        "..........",
+        "..........",
+        ".........."
+      ],
+      [
+        "..........",
+        ".SSSSSSSH.",
+        "..........",
+        "..........",
+        ".........."
+      ],
+      [
+        ".GGGGGGGG.",
+        "GW1234567G",
+        ".DDDDDDDD.",
+        "..........",
+        ".........."
+      ],
+      [
+        ".GGGGGGGG.",
+        "G........G",
+        ".BBBBBBBB.",
+        ".SSSSSSSS.",
+        ".........."
+      ],
+      [
+        ".GGGGGGGG.",
+        "..........",
+        "..........",
+        ".PPPPPPPP.",
+        ".SSSSSSSS."
+      ],
+      [
+        "..........",
+        "..........",
+        "..........",
+        ".OOOOOOOO.",
+        ".RRRRRRRR."
+      ]
+    ]
+  },
+  "extras": [
+    {
+      "item": "minecraft:water_bucket",
+      "count": 1
+    }
+  ],
+  "id": "bambus-beobachter-kolben",
+  "name": "Bambusfarm (Beobachter + Kolben)",
+  "category": "pflanzen",
+  "outputs": [
+    "minecraft:bamboo"
+  ],
+  "tags": [
+    "Brennstoff",
+    "Gerüst",
+    "Stöcke"
+  ],
+  "difficulty": 2,
+  "requirements": {
+    "dimension": [
+      "overworld",
+      "end"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Bambus wächst nur in geladenen Chunks innerhalb der Simulationsdistanz."
+    },
+    "mobs": [],
+    "simulationDistance": "Die Farm muss innerhalb der Simulationsdistanz liegen.",
+    "chunkAligned": false
+  },
+  "principle": "Bambus wächst ohne Wasser Block für Block in die Höhe. Jeder Beobachter schaut auf die Stelle, an der der dritte Block erscheint, und gibt dann einen Impuls an den Redstone-Staub hinter sich. Der Staub versorgt die Blöcke hinter den Kolben mit Strom, und alle Kolben stoßen den Bambus auf Höhe des zweiten Blocks ab – alles darüber bricht mit ab. Der unterste Block bleibt stehen und wächst nach. Der Wasserkanal davor dient hier nur dem Transport zum Trichter.",
+  "blueprintOrigin": {
+    "kind": "standarddesign",
+    "note": "Eigene Umsetzung des verbreiteten Standarddesigns (Kolben auf Höhe 2, Beobachter auf Höhe 3), gleicher Aufbau wie die Zuckerrohrfarm. Das Wiki beschreibt das Prinzip, zeigt aber kein Schema. Noch nicht im Spiel getestet."
+  },
+  "sources": [
+    {
+      "title": "Tutorial: Bamboo farming",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Bamboo_farming",
+      "license": "CC BY-NC-SA 3.0"
+    },
+    {
+      "title": "Bamboo (Wachstum, Licht, Verhalten bei Kolben)",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Bamboo",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

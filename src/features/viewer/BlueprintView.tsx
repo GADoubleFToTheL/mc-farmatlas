@@ -47,8 +47,7 @@ export function BlueprintView({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative">
-        <LayerCanvas
+      <LayerCanvas
           ref={canvas}
           structure={structure}
           visuals={visuals}
@@ -60,10 +59,8 @@ export function BlueprintView({
           onSelect={setSelected}
           onSwipe={(d) => change(layer + d)}
           className="block w-full rounded-xl border border-line"
-          style={{ height: `clamp(240px, ${Math.round(aspect * 100)}vw, 62dvh)` }}
+          style={{ height: `clamp(240px, min(${Math.round(aspect * 100)}vw, ${structure.size.z * 56 + 44}px), 62dvh)` }}
         />
-        <Compass />
-      </div>
 
       <LayerStepper layer={layer} total={total} onChange={change} done={doneLayers.includes(layer + 1)} />
 
@@ -76,6 +73,7 @@ export function BlueprintView({
           <Icon name="reset" />
           Zoom zurücksetzen
         </Button>
+        <Compass className="ml-auto" />
       </div>
 
       {selected && (
@@ -109,7 +107,8 @@ export function BlueprintView({
       </section>
       <SymbolHelp />
       <p className="text-xs text-muted">
-        Wischen wechselt die Ebene, zwei Finger zoomen, Doppeltipp vergrößert. Das Lineal zählt vom Startblock aus.
+        Wischen wechselt die Ebene, zwei Finger zoomen, Doppeltipp vergrößert (am PC: Doppelklick oder Strg + Mausrad).
+        Das Lineal zählt vom Startblock aus.
       </p>
     </div>
   );

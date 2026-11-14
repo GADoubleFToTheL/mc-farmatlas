@@ -115,6 +115,15 @@ export function updateSettings(patch: Partial<Settings>): void {
   void database.saveSettings(settings);
 }
 
+let persistRequested = false;
+
+/** Bittet den Browser einmalig, die Daten nicht von sich aus zu löschen. */
+function requestPersistence(): void {
+  if (persistRequested) return;
+  persistRequested = true;
+  void navigator.storage?.persist?.().catch(() => false);
+}
+
 export function updateFarmState(farmId: string, patch: Partial<Omit<FarmState, 'farmId' | 'updatedAt'>>): void {
   const current = state.farmStates.get(farmId) ?? emptyFarmState(farmId);
   const next: FarmState = { ...current, ...patch, farmId, updatedAt: Date.now() };
@@ -122,6 +131,7 @@ export function updateFarmState(farmId: string, patch: Partial<Omit<FarmState, '
   farmStates.set(farmId, next);
   setState({ farmStates });
   void database.saveFarmState(next);
+  requestPersistence();
 }
 
 export function toggleFavorite(farmId: string): void {

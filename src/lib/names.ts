@@ -194,6 +194,8 @@ const NAMES: Record<string, string> = {
   beef: 'Rohes Rindfleisch',
   cooked_beef: 'Steak',
   leather: 'Leder',
+  cod: 'Roher Kabeljau',
+  clay_ball: 'Tonklumpen',
   porkchop: 'Rohes Schweinefleisch',
   mutton: 'Rohes Hammelfleisch',
   honey_bottle: 'Honigflasche',

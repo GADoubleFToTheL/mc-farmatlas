@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": {
+    "entries": [
+      {
+        "item": "minecraft:clay",
+        "perHour": 83
+      }
+    ],
+    "source": 0,
+    "note": "Für die neun Felder dieses Plans, wenn du den Ton sofort durch neuen Schlamm ersetzt: Laut Wiki dauert die Umwandlung im Schnitt 388 Sekunden pro Block."
+  },
+  "status": "ungeprueft",
+  "steps": [
+    {
+      "text": "Baue die Plattform aus festen Blöcken mindestens zwei Blöcke über dem Boden, damit darunter Platz für die Tropfsteine bleibt. Die Ecke im Nordwesten ist der Startblock.",
+      "layers": [
+        2
+      ]
+    },
+    {
+      "text": "Hänge unter jeden Block der Plattform einen spitzen Tropfstein.",
+      "layers": [
+        1
+      ]
+    },
+    {
+      "text": "Lege auf jeden Block der Plattform Schlamm.",
+      "layers": [
+        3
+      ]
+    }
+  ],
+  "pitfalls": [
+    "Im Nether wird Schlamm nicht zu Ton.",
+    "Der Tropfstein muss unter dem Block hängen, auf dem der Schlamm liegt – nicht direkt unter dem Schlamm.",
+    "Fehlt unter einem Feld der Tropfstein, bleibt der Schlamm dort für immer Schlamm."
+  ],
+  "blueprint": {
+    "format": "grid",
+    "stateSyntax": "java",
+    "start": {
+      "x": 0,
+      "y": 1,
+      "z": 0
+    },
+    "palette": {
+      "T": "minecraft:pointed_dripstone[thickness=tip,vertical_direction=down]",
+      "S": "minecraft:stone",
+      "M": "minecraft:mud"
+    },
+    "layers": [
+      [
+        "TTT",
+        "TTT",
+        "TTT"
+      ],
+      [
+        "SSS",
+        "SSS",
+        "SSS"
+      ],
+      [
+        "MMM",
+        "MMM",
+        "MMM"
+      ]
+    ]
+  },
+  "extras": [
+    {
+      "item": "Glasflasche mit Wasser",
+      "count": 1,
+      "note": "macht aus Erde Schlamm; an einer Wasserquelle nachfüllen"
+    },
+    {
+      "item": "Schaufel",
+      "count": 1
+    }
+  ],
+  "id": "tonfarm-schlamm-tropfstein",
+  "name": "Tonfarm (Schlamm und Tropfstein)",
+  "category": "rohstoffe",
+  "outputs": [
+    "minecraft:clay"
+  ],
+  "tags": [
+    "Ton",
+    "Ziegel",
+    "Terrakotta",
+    "Schlamm"
+  ],
+  "difficulty": 1,
+  "requirements": {
+    "dimension": [
+      "overworld",
+      "end"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Die Umwandlung läuft nur innerhalb der Simulationsdistanz. Abbauen und Schlamm nachlegen machst du von Hand."
+    },
+    "mobs": [],
+    "simulationDistance": "Die Farm muss innerhalb der Simulationsdistanz liegen.",
+    "chunkAligned": false
+  },
+  "principle": "Liegt Schlamm auf einem Block, unter dem ein spitzer Tropfstein hängt, trocknet er nach einiger Zeit zu Ton. Du baust den Ton ab und legst neuen Schlamm nach. Schlamm stellst du her, indem du eine Wasserflasche auf Erde benutzt.",
+  "blueprintOrigin": {
+    "kind": "standarddesign",
+    "note": "Eigene Anordnung nach der im Wiki beschriebenen Mechanik (Schlamm – Block – hängender Tropfstein). Noch nicht im Spiel getestet."
+  },
+  "sources": [
+    {
+      "title": "Mud – Abschnitt „Clay“",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Mud",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

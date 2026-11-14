@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": null,
+  "status": "ungeprueft",
+  "steps": [],
+  "pitfalls": [
+    "Items, die einen Kaktus berühren, werden zerstört. Ein Teil der Ernte geht deshalb immer verloren.",
+    "Zwei Kakteen dürfen nie direkt nebeneinander stehen."
+  ],
+  "blueprint": null,
+  "extras": [],
+  "blueprintOrigin": null,
+  "id": "kaktusfarm",
+  "name": "Kaktusfarm (automatisch)",
+  "category": "pflanzen",
+  "outputs": [
+    "minecraft:cactus"
+  ],
+  "tags": [
+    "Grüner Farbstoff",
+    "XP durch Schmelzen"
+  ],
+  "difficulty": 2,
+  "requirements": {
+    "dimension": [
+      "overworld"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Kaktus wächst nur in geladenen Chunks innerhalb der Simulationsdistanz."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Ein Kaktus wächst auf Sand in die Höhe. Steht neben der Stelle, an der das neue Stück erscheint, irgendein Block, bricht das Stück sofort ab und fällt als Item herunter. Dünne Blöcke wie Zäune, Eisengitter oder Glasscheiben eignen sich am besten, weil das Item an ihnen vorbei nach unten fällt. Ein Wasserstrom unter den Kakteen spült die Items in einen Trichter.",
+  "editionNotes": {
+    "bedrock": "Beim Schmelzen gibt Kaktus in Bedrock deutlich weniger Erfahrung als in Java.",
+    "java": null
+  },
+  "sources": [
+    {
+      "title": "Tutorial: Cactus farming",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Cactus_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

@@ -40,6 +40,28 @@ Bedrock und Java, jeweils klar gekennzeichnet.
 - Mobile first: Touch-Flächen mindestens 44 px, Prüfung bei 390 px Breite und am Desktop.
 - Persönliche Daten (Favoriten, Fortschritt, Notizen, Importe) nur lokal in IndexedDB.
 
+## Aufbau
+
+| Ordner | Inhalt |
+|---|---|
+| `data/farms/` | eine JSON-Datei pro Farm |
+| `src/lib/` | Kernlogik ohne UI: `schema`, `version`, `blockstate`, `structure`, `traits`, `materials`, `catalog`, `userdata`, `names`, `blockstyle` |
+| `src/db/` | IndexedDB (`database.ts`) und Zustand im Speicher (`store.ts`) |
+| `src/features/` | `catalog`, `farm`, `viewer`, `materials`, `build`, `settings` |
+| `src/ui/` | gemeinsame Bausteine (Knöpfe, Chips, Blatt, Icons) |
+| `scripts/` | Node-Skripte (`validate.ts`) |
+
+Wichtige Zusammenhänge:
+
+- `structure.ts` ist das gemeinsame Format für Baupläne (Palette + Index-Array). Zeichenraster
+  aus Farm-Dateien und später importierte Schematics werden beide dorthin übersetzt.
+- `traits.ts` macht aus einem Blockzustand das, was der Viewer zeigt (Pfeil, Verzögerung, Hälfte,
+  Flüssigkeit). Achtung: Bei `repeater`/`comparator` ist der Pfeil die Signalrichtung, also
+  entgegen `facing`; beim Beobachter zeigt `facing` auf die beobachtete Seite.
+- `materials.ts` zählt Wasser- und Lavaquellen getrennt von Items; fließende Flüssigkeit kostet nichts.
+- Neue Blöcke: deutschen Namen in `names.ts`, Farbe in `blockstyle.ts` ergänzen.
+  `npm run validate` gibt einen Hinweis, wenn einer Farm ein deutscher Name fehlt.
+
 ## Datenschema
 
 Quelle der Wahrheit ist `src/lib/schema.ts` (zod). Kurzfassung:
@@ -54,6 +76,8 @@ Quelle der Wahrheit ist `src/lib/schema.ts` (zod). Kurzfassung:
   - Achsen: x = Spalte (Westen → Osten), z = Zeile (Norden oben), y = Ebene (unten → oben)
   - `start`: nullbasierter Startblock, darf nicht Luft sein
   - `stateSyntax`: `java` (`minecraft:repeater[facing=north,delay=2]`) oder `bedrock`
+- `blueprintOrigin` (Pflicht bei Bauplan): `quelle` (aus der Quelle übernommen),
+  `standarddesign` (eigene Umsetzung eines Standarddesigns) oder `import`, jeweils mit Erklärung
 - `extras`: was nicht im Bauplan steht (Wassereimer, Mobs, Werkzeug)
 - `sources`, optional `schematics` (bekannte Downloads samt Zugangsart)
 

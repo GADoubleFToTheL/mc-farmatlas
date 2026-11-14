@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "editions": {
+    "bedrock": {
+      "from": "1.21.0",
+      "to": "26.62"
+    },
+    "java": {
+      "from": "1.21",
+      "to": "26.3"
+    }
+  },
+  "rate": null,
+  "status": "ungeprueft",
+  "steps": [
+    {
+      "text": "Lege den Boden und setze genau unter das spätere Basaltfeld die Seelenerde. Am einfachsten gräbst du den Graben direkt in den Boden; der Stein im Plan steht für jeden nicht brennbaren Block.",
+      "layers": [
+        1
+      ]
+    },
+    {
+      "text": "Baue die Umrandung und setze das Blaueis östlich neben das freie Feld über der Seelenerde.",
+      "layers": [
+        2
+      ]
+    },
+    {
+      "text": "Setze zuletzt die Lavaquelle westlich neben das freie Feld. Die Lava fließt hinein und wird sofort zu Basalt.",
+      "layers": [
+        2
+      ]
+    },
+    {
+      "text": "Die Lücke in der südlichen Reihe ist dein Standplatz: Von dort baust du den Basalt ab.",
+      "layers": [
+        2
+      ]
+    }
+  ],
+  "pitfalls": [
+    "Seelensand statt Seelenerde: Es muss Seelenerde sein, mit Seelensand entsteht kein Basalt.",
+    "Packeis oder normales Eis statt Blaueis funktioniert nicht.",
+    "Ein Teil des Basalts kann in die Lava fallen und verbrennen."
+  ],
+  "blueprint": {
+    "format": "grid",
+    "stateSyntax": "java",
+    "start": {
+      "x": 2,
+      "y": 0,
+      "z": 1
+    },
+    "palette": {
+      "S": "minecraft:stone",
+      "O": "minecraft:soul_soil",
+      "L": "minecraft:lava[level=0]",
+      "I": "minecraft:blue_ice"
+    },
+    "layers": [
+      [
+        "SSSSS",
+        "SSOSS",
+        "SSSSS"
+      ],
+      [
+        "SSSSS",
+        "SL.IS",
+        "SS.SS"
+      ]
+    ]
+  },
+  "extras": [
+    {
+      "item": "minecraft:lava_bucket",
+      "count": 1
+    },
+    {
+      "item": "Spitzhacke",
+      "count": 1
+    }
+  ],
+  "id": "basalt-generator",
+  "name": "Basalt-Generator",
+  "category": "rohstoffe",
+  "outputs": [
+    "minecraft:basalt"
+  ],
+  "tags": [
+    "Generator",
+    "Baumaterial"
+  ],
+  "difficulty": 2,
+  "requirements": {
+    "dimension": [
+      "overworld",
+      "nether",
+      "end"
+    ],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Du baust den Basalt selbst mit der Spitzhacke ab. Im Nether fließt Lava schneller, der Generator liefert dort zügiger nach."
+    },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Fließt Lava in ein Feld, das auf Seelenerde liegt und seitlich an Blaueis grenzt, wird sie zu Basalt. Baust du den Basalt ab, fließt aus der Lavaquelle daneben neue Lava nach und es entsteht der nächste Block. Wasser wird nicht gebraucht, deshalb funktioniert der Generator auch im Nether.",
+  "blueprintOrigin": {
+    "kind": "standarddesign",
+    "note": "Eigene Anordnung nach der im Wiki beschriebenen Mechanik (Seelenerde unten, Blaueis daneben, Lava fließt hinein), aufgebaut wie der Bruchstein-Graben. Das Wiki zeigt dafür kein Schema. Noch nicht im Spiel getestet."
+  },
+  "sources": [
+    {
+      "title": "Tutorial: Basalt farming",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Basalt_farming",
+      "license": "CC BY-NC-SA 3.0"
+    },
+    {
+      "title": "Basalt – Entstehung",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Basalt",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

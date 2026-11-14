@@ -13,10 +13,35 @@ Das Projekt entsteht in Phasen:
 | Phase | Inhalt | Stand |
 |---|---|---|
 | 0 | Grundgerüst, installierbare App, automatische Veröffentlichung | fertig |
-| 1 | Übersicht, Detailseite, Ebenen-Viewer, Materialliste, Bau-Modus, erste Farmen | offen |
+| 1 | Übersicht, Detailseite, Ebenen-Viewer, Materialliste, Bau-Modus, erste Farmen | fertig |
 | 2 | Import von Schematic-Dateien (`.litematic`, `.schem`, `.nbt`, `.mcstructure`) | offen |
 | R | Recherche weiterer Farmen für Bedrock und Java | offen |
 | 3 | 3D-Vorschau, Drehen/Spiegeln, Export, Notizen | offen |
+
+## Was die App kann
+
+- **Übersicht:** Suche nach Name oder Item („Eisen“, „XP“), Filter nach Kategorie, Edition,
+  Version, Schwierigkeit, Größe und AFK, Sortierung, Favoriten.
+- **Detailseite:** Steckbrief, Voraussetzungen, Funktionsprinzip, Bauschritte, häufige Fehler, Quellen.
+- **Ebenen-Viewer:** eine Ebene als Raster, Norden ist oben. Wischen oder ±-Tasten wechseln die
+  Ebene, zwei Finger zoomen, Antippen zeigt Name und Zustand eines Blocks. Die Ebene darunter
+  lässt sich blass einblenden. Das Lineal zählt vom Startblock aus.
+- **Materialliste:** gesamt oder pro Ebene, umgerechnet in Stacks und Shulkerkisten, zum Abhaken.
+- **Bau-Modus:** Vollbild, Ebene für Ebene abhaken, der Bildschirm bleibt an, der Fortschritt bleibt gespeichert.
+- **Backup:** In den Einstellungen (Zahnrad) lassen sich alle eigenen Daten als Datei speichern und
+  auf einem anderen Gerät wieder laden.
+
+### Symbole im Bauplan
+
+| Symbol | Bedeutung |
+|---|---|
+| Pfeil | Ausrichtung des Blocks; bei Verstärkern die Signalrichtung |
+| ⊙ / ⊗ | zeigt nach oben / nach unten |
+| roter Punkt | Beobachter: Signalausgang (Rückseite) |
+| Zahl im roten Kreis | Verstärker: Verzögerung in Ticks |
+| halb gefülltes Feld | obere bzw. untere Stufe |
+| Blau mit Rahmen / gestreift | Wasserquelle / fließendes Wasser |
+| grüne Ecke | Startblock |
 
 ## App aufs Handy holen
 
