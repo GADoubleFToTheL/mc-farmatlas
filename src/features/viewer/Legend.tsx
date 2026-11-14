@@ -51,6 +51,7 @@ export function SymbolHelp() {
     ['halb gefüllt', 'obere bzw. untere Stufe'],
     ['Rahmen im Blau', 'Wasserquelle – gestreift heißt fließend'],
     ['grüne Ecke', 'Startblock, hier beginnst du'],
+    ['weiße Raute', 'Behälter mit Inhalt – antippen zeigt, was hineingehört'],
     ['blass', 'Ebene darunter (zur Orientierung)'],
   ];
   return (

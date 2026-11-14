@@ -26,6 +26,7 @@ export function idsWithoutGermanName(farm: Farm): string[] {
   for (const entry of farm.rate?.entries ?? []) ids.add(entry.item);
   if (farm.blueprint) {
     for (const value of Object.values(farm.blueprint.palette)) {
+      if (value === 'minecraft:air') continue;
       const state = parseBlockState(value, farm.blueprint.stateSyntax);
       ids.add(state.id);
       const item = blockCost(state).item;

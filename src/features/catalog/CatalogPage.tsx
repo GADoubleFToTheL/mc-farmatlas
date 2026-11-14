@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { SUMMARIES } from '../../data/farms';
+import { Link } from 'react-router-dom';
+import { useCatalog } from '../../data/farms';
 import { useFavorites, useSettings } from '../../db/store';
 import {
   countActiveFilters,
@@ -20,6 +21,7 @@ export function CatalogPage() {
   const state = useCatalogState();
   const settings = useSettings();
   const favorites = useFavorites();
+  const catalog = useCatalog();
   const [filterOpen, setFilterOpen] = useState(false);
 
   const edition = state.edition ?? settings.edition;
@@ -28,8 +30,8 @@ export function CatalogPage() {
     [state, edition, settings.versions],
   );
   const results = useMemo(
-    () => sortFarms(SUMMARIES.filter((s) => matchesFilter(s, filter, favorites)), state.sort),
-    [filter, favorites, state.sort],
+    () => sortFarms(catalog.summaries.filter((s) => matchesFilter(s, filter, favorites)), state.sort),
+    [catalog, filter, favorites, state.sort],
   );
   const activeFilters = countActiveFilters(filter);
 
@@ -131,6 +133,17 @@ export function CatalogPage() {
           ))}
         </div>
       )}
+
+      <Link
+        to="/import"
+        className="flex min-h-16 items-center gap-3 rounded-xl border border-dashed border-line px-4 py-3 text-sm hover:bg-surface"
+      >
+        <Icon name="upload" className="size-6 shrink-0 text-accent" />
+        <span>
+          <span className="block font-semibold">Eigene Schematic importieren</span>
+          <span className="text-muted">.litematic, .schem, .nbt oder .mcstructure – bleibt auf diesem Gerät</span>
+        </span>
+      </Link>
 
       <FilterSheet
         open={filterOpen}

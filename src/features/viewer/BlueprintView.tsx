@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { paletteIndexAt } from '../../lib/structure';
+import { blockIndex, paletteIndexAt } from '../../lib/structure';
 import { Button } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 import { BlockInfo } from './BlockInfo';
@@ -25,7 +25,7 @@ export function BlueprintView({
   doneLayers: readonly number[];
   stepsForLayer: string[];
 }) {
-  const { structure, visuals, start } = blueprint;
+  const { structure, visuals, start, contents, markers } = blueprint;
   const canvas = useRef<LayerCanvasHandle>(null);
   const [showBelow, setShowBelow] = useState(true);
   const [selected, setSelected] = useState<CellPos | null>(null);
@@ -56,6 +56,7 @@ export function BlueprintView({
           start={start}
           selected={selected}
           highlight={highlight}
+          markers={markers}
           onSelect={setSelected}
           onSwipe={(d) => change(layer + d)}
           className="block w-full rounded-xl border border-line"
@@ -79,6 +80,8 @@ export function BlueprintView({
       {selected && (
         <BlockInfo
           visual={visuals[paletteIndexAt(structure, selected.x, layer, selected.z)] ?? null}
+          note={structure.paletteNotes?.[paletteIndexAt(structure, selected.x, layer, selected.z)]}
+          content={contents.get(blockIndex(structure.size, selected.x, layer, selected.z))}
           cell={selected}
           layer={layer}
           start={start}

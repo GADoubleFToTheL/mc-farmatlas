@@ -12,10 +12,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate": "tsx scripts/validate.ts",
-    "check": "npm run typecheck && npm run validate && npm run test && vite build"
+    "check": "npm run typecheck && npm run validate && npm run test && vite build",
+    "import": "tsx scripts/import.ts"
   },
   "dependencies": {
     "idb": "^8.0.4",
+    "minecraft-block-reader": "^2.1.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5",

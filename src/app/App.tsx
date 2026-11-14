@@ -4,6 +4,7 @@ import { initStore, useStoreReady } from '../db/store';
 import { BuildPage } from '../features/build/BuildPage';
 import { CatalogPage } from '../features/catalog/CatalogPage';
 import { FarmPage } from '../features/farm/FarmPage';
+import { ImportPage } from '../features/import/ImportPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { Layout } from './Layout';
 import { NotFoundPage } from './NotFoundPage';
@@ -28,6 +29,7 @@ export function App() {
           <Route index element={<CatalogPage />} />
           <Route path="farm/:id/bauen" element={<BuildPage />} />
           <Route path="farm/:id/:tab?" element={<FarmPage />} />
+          <Route path="import" element={<ImportPage />} />
           <Route path="einstellungen" element={<SettingsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

@@ -3,7 +3,7 @@
  * Pinch-Zoom, Verschieben, Wischen zum Ebenenwechsel, Antippen.
  */
 import { useCallback, useEffect, useImperativeHandle, useRef, type CSSProperties, type Ref } from 'react';
-import { paletteIndexAt, type Structure } from '../../lib/structure';
+import { blockIndex, paletteIndexAt, type Structure } from '../../lib/structure';
 import { drawBlock } from './draw';
 import type { BlockVisual } from './visuals';
 
@@ -31,6 +31,8 @@ interface Props {
   selected: CellPos | null;
   /** Palettenindizes, die hervorgehoben werden (aus der Legende). */
   highlight: ReadonlySet<number> | null;
+  /** Blockpositionen (Index in der Struktur) mit Zusatzinfo, z. B. Behälter mit Inhalt. */
+  markers?: ReadonlySet<number>;
   onSelect: (cell: CellPos | null) => void;
   /** +1 = nächste (höhere) Ebene, −1 = vorherige. */
   onSwipe: (direction: 1 | -1) => void;
@@ -65,6 +67,7 @@ export function LayerCanvas({
   start,
   selected,
   highlight,
+  markers,
   onSelect,
   onSwipe,
   lockScroll = false,
@@ -76,8 +79,8 @@ export function LayerCanvas({
   const view = useRef<View>({ scale: 24, ox: 0, oy: 0, fit: 24 });
   const size = useRef({ w: 0, h: 0 });
   const frame = useRef(0);
-  const props = useRef({ structure, visuals, layer, showBelow, start, selected, highlight });
-  props.current = { structure, visuals, layer, showBelow, start, selected, highlight };
+  const props = useRef({ structure, visuals, layer, showBelow, start, selected, highlight, markers });
+  props.current = { structure, visuals, layer, showBelow, start, selected, highlight, markers };
 
   const clamp = useCallback(() => {
     const v = view.current;
@@ -144,6 +147,23 @@ export function LayerCanvas({
           if (dim) ctx.globalAlpha = 0.22;
           drawBlock(ctx, visual, px, py, c, { labels });
           ctx.globalAlpha = 1;
+          // Raute oben rechts: Hier gibt es Zusatzinfos (Antippen)
+          if (p.markers?.has(blockIndex(p.structure.size, x, p.layer, z)) && c >= 10) {
+            const r = Math.max(2.5, c * 0.13);
+            const mx = px + c - r - 1.5;
+            const my = py + r + 1.5;
+            ctx.beginPath();
+            ctx.moveTo(mx, my - r);
+            ctx.lineTo(mx + r, my);
+            ctx.lineTo(mx, my + r);
+            ctx.lineTo(mx - r, my);
+            ctx.closePath();
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#101418';
+            ctx.stroke();
+          }
         } else if (p.showBelow && p.layer > 0) {
           const below = p.visuals[paletteIndexAt(p.structure, x, p.layer - 1, z)];
           if (below) {
@@ -285,7 +305,7 @@ export function LayerCanvas({
 
   useEffect(() => {
     requestDraw();
-  }, [layer, showBelow, selected, highlight, visuals, start, requestDraw]);
+  }, [layer, showBelow, selected, highlight, markers, visuals, start, requestDraw]);
 
   // Farbwechsel (hell/dunkel) neu zeichnen
   useEffect(() => {

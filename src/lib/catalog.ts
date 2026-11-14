@@ -2,8 +2,9 @@
  * Übersicht: Kennzahlen je Farm ableiten, suchen, filtern, sortieren.
  * Reine Funktionen ohne UI, damit sie testbar bleiben.
  */
+import type { ImportInfo } from './localfarm';
 import { displayName } from './names';
-import type { Category, Edition, Farm } from './schema';
+import { blueprintSize, type Category, type Edition, type Farm } from './schema';
 import { isInRange } from './version';
 
 export const CATEGORY_LABELS: Record<Category, string> = {
@@ -53,6 +54,11 @@ export interface FarmSummary {
   sizeClass: SizeClass | null;
   hasBlueprint: boolean;
   searchText: string;
+  /**
+   * Gesetzt bei lokalen Importen: "eigen" = eigenständige importierte Farm,
+   * "angehaengt" = Katalog-Farm, deren Bauplan aus einem eigenen Import stammt.
+   */
+  local?: { kind: 'eigen' | 'angehaengt'; recordId: string; info: ImportInfo };
 }
 
 /** Kleinbuchstaben, Umlaute und Akzente vereinheitlicht („Kürbis“ → „kurbis“). */
@@ -66,8 +72,8 @@ export function normalize(text: string): string {
 
 export function farmSize(farm: Farm): FarmSize | null {
   if (farm.blueprint) {
-    const first = farm.blueprint.layers[0]!;
-    return { width: [...first[0]!].length, height: farm.blueprint.layers.length, depth: first.length };
+    const size = blueprintSize(farm.blueprint);
+    return { width: size.x, height: size.y, depth: size.z };
   }
   return farm.size ?? null;
 }
@@ -78,7 +84,7 @@ export function sizeClassOf(size: FarmSize | null): SizeClass | null {
   return footprint <= 9 ? 'klein' : footprint <= 24 ? 'mittel' : 'gross';
 }
 
-export function summarize(farm: Farm): FarmSummary {
+export function summarize(farm: Farm, local?: FarmSummary['local']): FarmSummary {
   const size = farmSize(farm);
   const words = [
     farm.name,
@@ -93,6 +99,7 @@ export function summarize(farm: Farm): FarmSummary {
     sizeClass: sizeClassOf(size),
     hasBlueprint: farm.blueprint !== null,
     searchText: normalize(words.join(' ')),
+    ...(local ? { local } : {}),
   };
 }
 

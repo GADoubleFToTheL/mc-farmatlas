@@ -44,6 +44,9 @@ export default defineConfig({
       },
     }),
   ],
+  // Die Schematic-Bibliothek bringt WebAssembly mit; vorgebündelt lädt sie es im
+  // Entwicklungsserver nicht und fällt still auf langsames JavaScript zurück.
+  optimizeDeps: { exclude: ['minecraft-block-reader'] },
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],

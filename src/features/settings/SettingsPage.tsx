@@ -68,7 +68,10 @@ export function SettingsPage() {
     a.download = `farmatlas-backup-${backup.exportedAt.slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    setMessage({ tone: 'ok', text: `Backup mit ${backup.farmStates.length} Farm-Einträgen gespeichert.` });
+    setMessage({
+      tone: 'ok',
+      text: `Backup mit ${backup.farmStates.length} Farm-Einträgen und ${backup.userFarms.length} importierten Farmen gespeichert.`,
+    });
   };
 
   const onFile = async (file: File | undefined) => {
@@ -86,14 +89,15 @@ export function SettingsPage() {
 
   const apply = async (mode: 'merge' | 'replace') => {
     if (!pending) return;
-    const count = await importBackup(pending, mode);
+    const result = await importBackup(pending, mode);
     setPending(null);
+    const what = `${result.farmStates} Farm-Einträge und ${result.localFarms} importierte Farmen`;
     setMessage({
       tone: 'ok',
       text:
         mode === 'merge'
-          ? `${count} Farm-Einträge zusammengeführt. Bei doppelten Einträgen gilt der neuere Stand.`
-          : `Daten durch das Backup ersetzt (${count} Farm-Einträge).`,
+          ? `${what} zusammengeführt. Bei doppelten Einträgen gilt der neuere Stand.`
+          : `Daten durch das Backup ersetzt (${what}).`,
     });
   };
 
@@ -173,7 +177,8 @@ export function SettingsPage() {
           <div className="mt-3 rounded-lg border border-line bg-bg p-3">
             <p className="text-sm">
               Backup vom <strong>{new Date(pending.exportedAt).toLocaleString('de-DE')}</strong> mit{' '}
-              {pending.farmStates.length} Farm-Einträgen. Wie soll es geladen werden?
+              {pending.farmStates.length} Farm-Einträgen und {pending.userFarms.length} importierten Farmen. Wie soll es
+              geladen werden?
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Button variant="primary" onClick={() => void apply('merge')}>

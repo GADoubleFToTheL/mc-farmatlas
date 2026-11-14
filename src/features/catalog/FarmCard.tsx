@@ -50,6 +50,8 @@ export function FarmCard({
           {fit === 'andere-edition' && <Badge tone="warn">nicht für {EDITION_LABELS[myEdition]}</Badge>}
           {fit === 'andere-version' && <Badge tone="warn">nicht für {myVersion} bestätigt</Badge>}
           {!summary.hasBlueprint && <Badge tone="warn">Bauplan fehlt</Badge>}
+          {summary.local?.kind === 'eigen' && <Badge tone="accent">eigener Import</Badge>}
+          {summary.local?.kind === 'angehaengt' && <Badge tone="accent">Bauplan importiert</Badge>}
         </div>
       </Link>
       <button

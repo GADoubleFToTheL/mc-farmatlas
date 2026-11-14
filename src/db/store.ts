@@ -3,6 +3,7 @@
  * Komponenten lesen über die Hooks unten und schreiben über die update-Funktionen.
  */
 import { useSyncExternalStore } from 'react';
+import { localFarmRecordSchema, type LocalFarmRecord } from '../lib/localfarm';
 import {
   createBackup,
   DEFAULT_SETTINGS,
@@ -21,6 +22,8 @@ interface State {
   settings: Settings;
   farmStates: ReadonlyMap<string, FarmState>;
   favorites: ReadonlySet<string>;
+  /** Lokal importierte Farmen, Schlüssel = Datensatz-ID. */
+  localFarms: ReadonlyMap<string, LocalFarmRecord>;
 }
 
 let state: State = {
@@ -29,6 +32,7 @@ let state: State = {
   settings: DEFAULT_SETTINGS,
   farmStates: new Map(),
   favorites: new Set(),
+  localFarms: new Map(),
 };
 
 const listeners = new Set<() => void>();
@@ -53,15 +57,26 @@ function applyTheme(theme: Settings['theme']): void {
     ?.setAttribute('content', theme === 'dark' ? '#12161a' : '#f1f3f1');
 }
 
+/** Behält nur Datensätze, die dem aktuellen Schema entsprechen. */
+export function parseLocalFarms(raw: readonly unknown[]): LocalFarmRecord[] {
+  const records: LocalFarmRecord[] = [];
+  for (const entry of raw) {
+    const parsed = localFarmRecordSchema.safeParse(entry);
+    if (parsed.success) records.push(parsed.data);
+  }
+  return records;
+}
+
 let initPromise: Promise<void> | null = null;
 
 /** Lädt die gespeicherten Daten einmalig beim Start. */
 export function initStore(): Promise<void> {
   initPromise ??= (async () => {
-    const [persistent, stored, farmStates] = await Promise.all([
+    const [persistent, stored, farmStates, userFarms] = await Promise.all([
       database.isPersistent(),
       database.loadSettings(),
       database.loadAllFarmStates(),
+      database.loadUserFarms(),
     ]);
     const parsed = settingsSchema.safeParse(stored);
     const settings = parsed.success ? parsed.data : DEFAULT_SETTINGS;
@@ -71,6 +86,7 @@ export function initStore(): Promise<void> {
       persistent,
       settings,
       farmStates: new Map(farmStates.map((s) => [s.farmId, s])),
+      localFarms: new Map(parseLocalFarms(userFarms).map((r) => [r.id, r])),
     });
   })();
   return initPromise;
@@ -106,6 +122,25 @@ export function useFarmState(farmId: string): FarmState {
 
 export function useAllFarmStates(): ReadonlyMap<string, FarmState> {
   return useSyncExternalStore(subscribe, () => state.farmStates);
+}
+
+export function useLocalFarms(): ReadonlyMap<string, LocalFarmRecord> {
+  return useSyncExternalStore(subscribe, () => state.localFarms);
+}
+
+export async function saveLocalFarm(record: LocalFarmRecord): Promise<void> {
+  const localFarms = new Map(state.localFarms);
+  localFarms.set(record.id, record);
+  setState({ localFarms });
+  await database.saveUserFarm(record);
+  requestPersistence();
+}
+
+export async function deleteLocalFarm(id: string): Promise<void> {
+  const localFarms = new Map(state.localFarms);
+  localFarms.delete(id);
+  setState({ localFarms });
+  await database.deleteUserFarm(id);
 }
 
 export function updateSettings(patch: Partial<Settings>): void {
@@ -144,19 +179,31 @@ export function toggleInList<T>(list: readonly T[], value: T): T[] {
 }
 
 export async function exportBackup(): Promise<Backup> {
-  return createBackup(state.settings, [...state.farmStates.values()], await database.loadUserFarms());
+  return createBackup(state.settings, [...state.farmStates.values()], [...state.localFarms.values()]);
 }
 
-/** Führt ein Backup mit den vorhandenen Daten zusammen (neuerer Stand gewinnt). */
-export async function importBackup(backup: Backup, mode: 'merge' | 'replace'): Promise<number> {
-  const merged =
+export interface BackupImportResult {
+  farmStates: number;
+  localFarms: number;
+}
+
+/** Führt ein Backup mit den vorhandenen Daten zusammen (neuerer Stand gewinnt) oder ersetzt sie. */
+export async function importBackup(backup: Backup, mode: 'merge' | 'replace'): Promise<BackupImportResult> {
+  const incomingFarms = parseLocalFarms(backup.userFarms);
+  const mergedStates =
     mode === 'replace' ? backup.farmStates : mergeFarmStates([...state.farmStates.values()], backup.farmStates);
-  await database.replaceAllFarmStates(merged);
+  const localFarms = new Map(mode === 'replace' ? [] : state.localFarms);
+  for (const record of incomingFarms) {
+    const existing = localFarms.get(record.id);
+    if (!existing || record.info.importedAt >= existing.info.importedAt) localFarms.set(record.id, record);
+  }
+  await database.replaceAllFarmStates(mergedStates);
+  await database.replaceAllUserFarms([...localFarms.values()]);
   if (mode === 'replace') {
     applyTheme(backup.settings.theme);
     await database.saveSettings(backup.settings);
     setState({ settings: backup.settings });
   }
-  setState({ farmStates: new Map(merged.map((s) => [s.farmId, s])) });
-  return backup.farmStates.length;
+  setState({ farmStates: new Map(mergedStates.map((s) => [s.farmId, s])), localFarms });
+  return { farmStates: backup.farmStates.length, localFarms: incomingFarms.length };
 }

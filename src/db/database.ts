@@ -4,13 +4,14 @@
  * im Arbeitsspeicher weiter und weist in den Einstellungen darauf hin.
  */
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
+import type { LocalFarmRecord } from '../lib/localfarm';
 import type { FarmState, Settings } from '../lib/userdata';
 
 interface FarmatlasDB extends DBSchema {
   farmState: { key: string; value: FarmState };
   settings: { key: string; value: Settings };
-  /** Lokal importierte Farmen (Phase 2). */
-  userFarms: { key: string; value: { id: string } & Record<string, unknown> };
+  /** Lokal importierte Farmen. */
+  userFarms: { key: string; value: LocalFarmRecord };
 }
 
 const DB_NAME = 'farmatlas';
@@ -73,4 +74,23 @@ export async function saveSettings(settings: Settings): Promise<void> {
 export async function loadUserFarms(): Promise<unknown[]> {
   const db = await open();
   return db ? db.getAll('userFarms') : [];
+}
+
+export async function saveUserFarm(record: LocalFarmRecord): Promise<void> {
+  const db = await open();
+  await db?.put('userFarms', record);
+}
+
+export async function deleteUserFarm(id: string): Promise<void> {
+  const db = await open();
+  await db?.delete('userFarms', id);
+}
+
+export async function replaceAllUserFarms(records: LocalFarmRecord[]): Promise<void> {
+  const db = await open();
+  if (!db) return;
+  const tx = db.transaction('userFarms', 'readwrite');
+  await tx.store.clear();
+  await Promise.all(records.map((r) => tx.store.put(r)));
+  await tx.done;
 }

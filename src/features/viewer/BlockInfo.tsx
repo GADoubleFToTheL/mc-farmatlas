@@ -1,3 +1,5 @@
+import { displayName } from '../../lib/names';
+import type { ContainerContent } from '../../lib/schema';
 import { DIRECTION_DE } from '../../lib/traits';
 import { Icon } from '../../ui/Icon';
 import type { CellPos } from './LayerCanvas';
@@ -17,8 +19,14 @@ export function BlockInfo({
   cell,
   layer,
   start,
+  note,
+  content,
   onClose,
 }: {
+  /** Hinweis zum Blockzustand, z. B. nicht übersetzte Bedrock-Eigenschaften. */
+  note?: string;
+  /** Was laut Schematic in diesem Behälter liegt. */
+  content?: ContainerContent;
   visual: BlockVisual | null;
   cell: CellPos;
   layer: number;
@@ -39,6 +47,13 @@ export function BlockInfo({
             {d}
           </p>
         ))}
+        {content && (
+          <p className="mt-1 text-sm">
+            <span className="font-medium">Inhalt:</span>{' '}
+            {content.items.map((i) => `${i.count}× ${displayName(i.item)}`).join(', ')}
+          </p>
+        )}
+        {note && <p className="mt-1 text-sm text-warn">{note}</p>}
         <p className="mt-1 text-sm text-muted">
           Ebene {layer + 1} · {offsetText(cell.x - start.x, cell.z - start.z)}
         </p>

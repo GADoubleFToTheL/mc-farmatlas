@@ -148,6 +148,16 @@ export function blockCost(state: BlockState): BlockCost {
   return cost;
 }
 
+/** Items, die laut Schematic in Behältern liegen (gesamt oder für eine Ebene). */
+export function containerItems(structure: Structure, layer?: number): Map<string, number> {
+  const totals = new Map<string, number>();
+  for (const c of structure.containers ?? []) {
+    if (layer !== undefined && c.y !== layer) continue;
+    for (const { item, count } of c.items) totals.set(item, (totals.get(item) ?? 0) + count);
+  }
+  return totals;
+}
+
 export function emptyMaterials(): MaterialList {
   return { items: new Map(), fluids: { water: 0, lava: 0 } };
 }

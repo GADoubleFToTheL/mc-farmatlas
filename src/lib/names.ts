@@ -213,12 +213,240 @@ const NAMES: Record<string, string> = {
   green_dye: 'Grüner Farbstoff',
 };
 
+// ---------------------------------------------------------------------------
+// Regelmäßige Namensfamilien: Holzarten, Farben, Steinsorten
+// ---------------------------------------------------------------------------
+
+/** Holzart → [Vorsilbe für Holzprodukte, Stamm, Laub]. */
+const WOODS: Record<string, [string, string, string]> = {
+  oak: ['Eichenholz', 'Eichenstamm', 'Eichenlaub'],
+  spruce: ['Fichtenholz', 'Fichtenstamm', 'Fichtennadeln'],
+  birch: ['Birkenholz', 'Birkenstamm', 'Birkenlaub'],
+  jungle: ['Tropenholz', 'Tropenbaumstamm', 'Tropenbaumlaub'],
+  acacia: ['Akazienholz', 'Akazienstamm', 'Akazienlaub'],
+  dark_oak: ['Schwarzeichenholz', 'Schwarzeichenstamm', 'Schwarzeichenlaub'],
+  mangrove: ['Mangrovenholz', 'Mangrovenstamm', 'Mangrovenlaub'],
+  cherry: ['Kirschholz', 'Kirschstamm', 'Kirschlaub'],
+  pale_oak: ['Blasseichenholz', 'Blasseichenstamm', 'Blasseichenlaub'],
+  bamboo: ['Bambus', 'Bambusblock', ''],
+  crimson: ['Karmesin', 'Karmesinstiel', ''],
+  warped: ['Wirr', 'Wirrstiel', ''],
+};
+
+const WOOD_FORMS: Record<string, string> = {
+  planks: 'bretter',
+  slab: 'stufe',
+  stairs: 'treppe',
+  fence: 'zaun',
+  fence_gate: 'zauntor',
+  trapdoor: 'falltür',
+  door: 'tür',
+  sign: 'schild',
+  wall_sign: 'schild',
+  hanging_sign: 'hängeschild',
+  button: 'knopf',
+  pressure_plate: 'druckplatte',
+};
+
+/** Farbe → Stamm des Adjektivs; "!" = unveränderlich. */
+const COLORS: Record<string, string> = {
+  white: 'Weiß',
+  orange: 'Orange',
+  magenta: 'Magenta!',
+  light_blue: 'Hellblau',
+  yellow: 'Gelb',
+  lime: 'Hellgrün',
+  pink: 'Rosa!',
+  gray: 'Grau',
+  light_gray: 'Hellgrau',
+  cyan: 'Türkis',
+  purple: 'Violett',
+  blue: 'Blau',
+  brown: 'Braun',
+  green: 'Grün',
+  red: 'Rot',
+  black: 'Schwarz',
+};
+
+/** Gefärbter Block → [Name, Geschlecht]. */
+const COLOR_FORMS: Record<string, [string, 'f' | 'm' | 'n']> = {
+  wool: ['Wolle', 'f'],
+  carpet: ['Teppich', 'm'],
+  concrete: ['Beton', 'm'],
+  concrete_powder: ['Trockenbeton', 'm'],
+  terracotta: ['Keramik', 'f'],
+  glazed_terracotta: ['glasierte Keramik', 'f'],
+  stained_glass: ['Glas', 'n'],
+  stained_glass_pane: ['Glasscheibe', 'f'],
+  bed: ['Bett', 'n'],
+  shulker_box: ['Shulkerkiste', 'f'],
+  candle: ['Kerze', 'f'],
+  banner: ['Banner', 'n'],
+};
+
+/** Steinsorte → Wortstamm für Stufe, Treppe und Mauer. */
+const STONES: Record<string, string> = {
+  stone: 'Stein',
+  cobblestone: 'Bruchstein',
+  mossy_cobblestone: 'Bemooste Bruchstein',
+  stone_brick: 'Steinziegel',
+  mossy_stone_brick: 'Bemooste Steinziegel',
+  brick: 'Ziegel',
+  sandstone: 'Sandstein',
+  red_sandstone: 'Rote Sandstein',
+  andesite: 'Andesit',
+  diorite: 'Diorit',
+  granite: 'Granit',
+  polished_andesite: 'Polierte Andesit',
+  polished_diorite: 'Polierte Diorit',
+  polished_granite: 'Polierte Granit',
+  nether_brick: 'Netherziegel',
+  quartz: 'Quarz',
+  prismarine: 'Prismarin',
+  blackstone: 'Schwarzstein',
+  cobbled_deepslate: 'Bruchtiefenschiefer',
+  polished_deepslate: 'Polierte Tiefenschiefer',
+  deepslate_brick: 'Tiefenschieferziegel',
+  deepslate_tile: 'Tiefenschieferfliesen',
+  mud_brick: 'Schlammziegel',
+  tuff: 'Tuffstein',
+};
+
+const STONE_FORMS: Record<string, string> = { slab: 'stufe', stairs: 'treppe', wall: 'mauer' };
+
+const EXTRA: Record<string, string> = {
+  beacon: 'Leuchtfeuer',
+  diamond_block: 'Diamantblock',
+  gold_block: 'Goldblock',
+  emerald_block: 'Smaragdblock',
+  coal_block: 'Kohleblock',
+  lapis_block: 'Lapislazuliblock',
+  copper_block: 'Kupferblock',
+  soul_lantern: 'Seelenlaterne',
+  soul_torch: 'Seelenfackel',
+  deepslate_bricks: 'Tiefenschieferziegel',
+  deepslate_tiles: 'Tiefenschieferfliesen',
+  cracked_deepslate_tiles: 'Rissige Tiefenschieferfliesen',
+  polished_deepslate: 'Polierter Tiefenschiefer',
+  bricks: 'Ziegelsteine',
+  nether_bricks: 'Netherziegel',
+  sandstone: 'Sandstein',
+  andesite: 'Andesit',
+  diorite: 'Diorit',
+  granite: 'Granit',
+  tuff: 'Tuffstein',
+  calcite: 'Kalzit',
+  blackstone: 'Schwarzstein',
+  end_stone: 'Endstein',
+  end_rod: 'Endstab',
+  purpur_block: 'Purpurblock',
+  quartz_block: 'Quarzblock',
+  bookshelf: 'Bücherregal',
+  cobweb: 'Spinnennetz',
+  hay_block: 'Strohballen',
+  bone_block: 'Knochenblock',
+  dried_kelp_block: 'Getrockneter Seetangblock',
+  sponge: 'Schwamm',
+  anvil: 'Amboss',
+  brewing_stand: 'Braustand',
+  enchanting_table: 'Zaubertisch',
+  jukebox: 'Plattenspieler',
+  lectern: 'Lesepult',
+  loom: 'Webstuhl',
+  grindstone: 'Schleifstein',
+  stonecutter: 'Steinsäge',
+  smithing_table: 'Schmiedetisch',
+  fletching_table: 'Bognertisch',
+  cartography_table: 'Kartentisch',
+  flower_pot: 'Blumentopf',
+  chain: 'Kette',
+  lily_pad: 'Seerosenblatt',
+  short_grass: 'Gras',
+  fern: 'Farn',
+  dandelion: 'Löwenzahn',
+  snow: 'Schnee',
+  powder_snow: 'Pulverschnee',
+  cake: 'Kuchen',
+  sea_pickle: 'Seegurke',
+  turtle_egg: 'Schildkrötenei',
+  honeycomb_block: 'Honigwabenblock',
+  bee_nest: 'Bienennest',
+  beehive: 'Bienenstock',
+  sculk_sensor: 'Sculk-Sensor',
+  crafter: 'Werker',
+  wall_torch: 'Fackel',
+  redstone_wall_torch: 'Redstone-Fackel',
+  piston_head: 'Kolbenkopf',
+  dirt_path: 'Trampelpfad',
+  mycelium: 'Myzel',
+  amethyst_block: 'Amethystblock',
+  nether_portal: 'Netherportal',
+  crying_obsidian: 'Weinender Obsidian',
+  respawn_anchor: 'Seelenanker',
+  dragon_egg: 'Drachenei',
+  item_frame: 'Rahmen',
+  armor_stand: 'Rüstungsständer',
+  splash_potion: 'Wurftrank',
+  potion: 'Trank',
+  glass_bottle: 'Glasflasche',
+  nether_star: 'Netherstern',
+  iron_nugget: 'Eisenklumpen',
+  smooth_quartz: 'Glatter Quarzblock',
+  jigsaw: 'Verbundblock',
+  structure_block: 'Konstruktionsblock',
+};
+
+function colorAdjective(stem: string, gender: 'f' | 'm' | 'n'): string {
+  if (stem.endsWith('!')) return stem.slice(0, -1);
+  return stem + (gender === 'f' ? 'e' : gender === 'm' ? 'er' : 'es');
+}
+
+function composedName(short: string): string | undefined {
+  if (short.startsWith('stripped_')) {
+    const inner = composedName(short.slice('stripped_'.length));
+    return inner ? `Entrindeter ${inner}` : undefined;
+  }
+  // Farben zuerst (light_blue vor blue, daher längste Vorsilbe gewinnt)
+  for (const color of Object.keys(COLORS).sort((a, b) => b.length - a.length)) {
+    if (!short.startsWith(`${color}_`)) continue;
+    const form = COLOR_FORMS[short.slice(color.length + 1).replace(/^wall_/, '')];
+    if (form) return `${colorAdjective(COLORS[color]!, form[1])} ${form[0]}`;
+  }
+  for (const wood of Object.keys(WOODS).sort((a, b) => b.length - a.length)) {
+    if (!short.startsWith(`${wood}_`)) continue;
+    const [prefix, log, leaves] = WOODS[wood]!;
+    const rest = short.slice(wood.length + 1);
+    if (rest === 'log' || rest === 'stem' || rest === 'block') return log;
+    if (rest === 'wood' || rest === 'hyphae') return prefix.endsWith('holz') ? prefix : `${prefix}hyphen`;
+    if (rest === 'leaves' && leaves) return leaves;
+    if (rest === 'sapling' && prefix.endsWith('holz')) return `${prefix.slice(0, -4)}setzling`;
+    const form = WOOD_FORMS[rest] ?? WOOD_FORMS[rest.replace(/^wall_/, '')];
+    if (form) return prefix + form;
+  }
+  for (const stone of Object.keys(STONES).sort((a, b) => b.length - a.length)) {
+    if (!short.startsWith(`${stone}_`)) continue;
+    const form = STONE_FORMS[short.slice(stone.length + 1)];
+    if (form) return STONES[stone]! + form;
+  }
+  return undefined;
+}
+
+const composedCache = new Map<string, string | undefined>();
+
+function lookup(id: string): string | undefined {
+  const short = id.replace(/^minecraft:/, '');
+  const direct = NAMES[id] ?? NAMES[short] ?? EXTRA[short];
+  if (direct) return direct;
+  if (id.includes(':') && !id.startsWith('minecraft:')) return undefined;
+  if (!composedCache.has(short)) composedCache.set(short, composedName(short));
+  return composedCache.get(short);
+}
+
 export function hasGermanName(id: string): boolean {
-  return id in NAMES || id.replace(/^minecraft:/, '') in NAMES;
+  return lookup(id) !== undefined;
 }
 
 /** Anzeigename; unbekannte IDs werden ohne "minecraft:" zurückgegeben. */
 export function displayName(id: string): string {
-  const short = id.replace(/^minecraft:/, '');
-  return NAMES[id] ?? NAMES[short] ?? short;
+  return lookup(id) ?? id.replace(/^minecraft:/, '');
 }

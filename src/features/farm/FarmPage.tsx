@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { NotFoundPage } from '../../app/NotFoundPage';
-import { findFarm } from '../../data/farms';
-import { toggleFavorite, useFarmState, useSettings } from '../../db/store';
-import { CATEGORY_LABELS, EDITION_LABELS, versionFit } from '../../lib/catalog';
+import { useCatalog } from '../../data/farms';
+import { deleteLocalFarm, toggleFavorite, useFarmState, useSettings } from '../../db/store';
+import { CATEGORY_LABELS, EDITION_LABELS, versionFit, type FarmSummary } from '../../lib/catalog';
 import { Button, cx } from '../../ui/controls';
 import { Icon, type IconName } from '../../ui/Icon';
 import { MaterialsPanel } from '../materials/MaterialsPanel';
@@ -17,7 +18,9 @@ const TABS: ReadonlyArray<{ id: 'info' | 'bauplan' | 'material'; label: string; 
 ];
 type TabId = (typeof TABS)[number]['id'];
 
-function MissingBlueprint() {
+const FORMAT_NAMES = { litematic: '.litematic', schem: '.schem', nbt: '.nbt', mcstructure: '.mcstructure' } as const;
+
+function MissingBlueprint({ farmId }: { farmId: string }) {
   return (
     <div className="rounded-xl border border-warn/40 bg-warn/10 p-4">
       <p className="flex items-center gap-2 font-semibold">
@@ -26,21 +29,79 @@ function MissingBlueprint() {
       </p>
       <p className="mt-1.5 text-sm leading-relaxed">
         Für diese Farm gibt es noch keinen gesicherten Bauplan – und geraten wird hier nicht. Lade die Schematic-Datei
-        aus der Quelle herunter; der Import in der App folgt in Phase 2.
+        aus der Quelle herunter und importiere sie. Die Datei bleibt auf diesem Gerät.
       </p>
+      <Link
+        to={`/import?fuer=${encodeURIComponent(farmId)}`}
+        className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-accent-ink"
+      >
+        <Icon name="upload" />
+        Schematic importieren
+      </Link>
     </div>
+  );
+}
+
+/** Hinweise zu einem lokalen Import: Herkunft, Warnungen, Löschen. */
+function ImportNotice({ summary }: { summary: FarmSummary }) {
+  const navigate = useNavigate();
+  const [confirm, setConfirm] = useState(false);
+  const local = summary.local;
+  if (!local) return null;
+  const { info } = local;
+  const edition = EDITION_LABELS[info.edition];
+
+  const remove = async () => {
+    await deleteLocalFarm(local.recordId);
+    if (local.kind === 'eigen') navigate('/', { replace: true });
+    else setConfirm(false);
+  };
+
+  return (
+    <section className="rounded-xl border border-accent/40 bg-accent/5 p-4">
+      <h2 className="text-sm font-semibold tracking-wide text-accent uppercase">
+        {local.kind === 'eigen' ? 'Eigener Import' : 'Bauplan aus eigenem Import'}
+      </h2>
+      <p className="mt-1.5 text-sm leading-relaxed">
+        Aus <span className="font-mono text-xs break-all">{info.fileName}</span> · {FORMAT_NAMES[info.format]} ·{' '}
+        {info.blockCount.toLocaleString('de-DE')} Blöcke
+        {info.mcVersion && ` · gespeichert mit ${edition} ${info.mcVersionExact ? '' : 'ca. '}${info.mcVersion}`}
+        {info.author && ` · Ersteller laut Datei: ${info.author}`}. Liegt nur auf diesem Gerät.
+      </p>
+      {info.warnings.map((w) => (
+        <p key={w} className="mt-2 flex gap-2 text-sm leading-relaxed">
+          <Icon name="warn" className="mt-0.5 size-4 shrink-0 text-warn" />
+          {w}
+        </p>
+      ))}
+      <div className="mt-3 flex flex-wrap gap-2">
+        {confirm ? (
+          <>
+            <Button onClick={() => void remove()} className="border-danger/60 text-danger">
+              Wirklich löschen
+            </Button>
+            <Button variant="ghost" onClick={() => setConfirm(false)}>
+              Abbrechen
+            </Button>
+          </>
+        ) : (
+          <Button variant="ghost" onClick={() => setConfirm(true)}>
+            {local.kind === 'eigen' ? 'Import löschen' : 'Importierten Bauplan entfernen'}
+          </Button>
+        )}
+      </div>
+    </section>
   );
 }
 
 export function FarmPage() {
   const { id, tab: tabParam } = useParams();
-  const summary = findFarm(id);
+  const summary = useCatalog().find(id);
   if (!summary) return <NotFoundPage />;
-  return <FarmPageContent key={summary.farm.id} farmId={summary.farm.id} tab={tabParam} />;
+  return <FarmPageContent key={summary.farm.id} summary={summary} tab={tabParam} />;
 }
 
-function FarmPageContent({ farmId, tab: tabParam }: { farmId: string; tab: string | undefined }) {
-  const summary = findFarm(farmId)!;
+function FarmPageContent({ summary, tab: tabParam }: { summary: FarmSummary; tab: string | undefined }) {
   const { farm } = summary;
   const navigate = useNavigate();
   const [search, setSearch] = useSearchParams();
@@ -55,6 +116,7 @@ function FarmPageContent({ farmId, tab: tabParam }: { farmId: string; tab: strin
 
   const fit = versionFit(farm, settings.edition, settings.versions[settings.edition]);
   const stepsForLayer = farm.steps.filter((s) => s.layers?.includes(layer + 1)).map((s) => s.text);
+  const doneCount = farmState.doneLayers.filter((l) => l <= total).length;
 
   return (
     <div className="flex flex-col gap-3">
@@ -64,7 +126,7 @@ function FarmPageContent({ farmId, tab: tabParam }: { farmId: string; tab: strin
         </Link>
         <div className="min-w-0 flex-1 pt-1">
           <p className="text-xs font-medium tracking-wide text-muted uppercase">{CATEGORY_LABELS[farm.category]}</p>
-          <h1 className="text-xl leading-snug font-semibold">{farm.name}</h1>
+          <h1 className="text-xl leading-snug font-semibold break-words">{farm.name}</h1>
         </div>
         <button
           type="button"
@@ -106,7 +168,8 @@ function FarmPageContent({ farmId, tab: tabParam }: { farmId: string; tab: strin
 
       {tab === 'info' && (
         <>
-          {!blueprint && <MissingBlueprint />}
+          {!blueprint && <MissingBlueprint farmId={farm.id} />}
+          <ImportNotice summary={summary} />
           <FarmInfo
             summary={summary}
             myEdition={settings.edition}
@@ -125,7 +188,7 @@ function FarmPageContent({ farmId, tab: tabParam }: { farmId: string; tab: strin
             stepsForLayer={stepsForLayer}
           />
         ) : (
-          <MissingBlueprint />
+          <MissingBlueprint farmId={farm.id} />
         ))}
 
       {tab === 'material' && (
@@ -142,9 +205,7 @@ function FarmPageContent({ farmId, tab: tabParam }: { farmId: string; tab: strin
         <div className="sticky bottom-0 -mx-4 border-t border-line bg-bg/95 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] backdrop-blur">
           <Button variant="primary" className="h-13 w-full text-base" onClick={() => navigate(`/farm/${farm.id}/bauen`)}>
             <Icon name="hammer" />
-            {farmState.doneLayers.length > 0
-              ? `Weiterbauen (${farmState.doneLayers.length} von ${total} Ebenen fertig)`
-              : 'Bau-Modus starten'}
+            {doneCount > 0 ? `Weiterbauen (${doneCount} von ${total} Ebenen fertig)` : 'Bau-Modus starten'}
           </Button>
         </div>
       )}

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { NotFoundPage } from '../../app/NotFoundPage';
-import { findFarm } from '../../data/farms';
+import { useCatalog } from '../../data/farms';
 import { updateFarmState, useFarmState } from '../../db/store';
-import { paletteIndexAt } from '../../lib/structure';
+import { blockIndex, paletteIndexAt } from '../../lib/structure';
 import { Button, cx } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
@@ -19,7 +19,7 @@ import { useWakeLock } from './useWakeLock';
 
 export function BuildPage() {
   const { id } = useParams();
-  const summary = findFarm(id);
+  const summary = useCatalog().find(id);
   const blueprint = useBlueprintOrNull(summary);
   if (!summary || !blueprint) return <NotFoundPage />;
   return <BuildMode key={summary.farm.id} summary={summary} blueprint={blueprint} />;
@@ -44,7 +44,7 @@ const WAKE_TEXT = {
 
 function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: LoadedBlueprint }) {
   const { farm } = summary;
-  const { structure, visuals, start } = blueprint;
+  const { structure, visuals, start, contents, markers } = blueprint;
   const total = structure.size.y;
   const navigate = useNavigate();
   const farmState = useFarmState(farm.id);
@@ -137,6 +137,7 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
           start={start}
           selected={selected}
           highlight={highlight}
+          markers={markers}
           onSelect={setSelected}
           onSwipe={(d) => setLayer(layer + d)}
           lockScroll
@@ -158,6 +159,8 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
         {selected ? (
           <BlockInfo
             visual={visuals[paletteIndexAt(structure, selected.x, layer, selected.z)] ?? null}
+          note={structure.paletteNotes?.[paletteIndexAt(structure, selected.x, layer, selected.z)]}
+          content={contents.get(blockIndex(structure.size, selected.x, layer, selected.z))}
             cell={selected}
             layer={layer}
             start={start}

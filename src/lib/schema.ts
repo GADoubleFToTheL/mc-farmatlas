@@ -85,22 +85,58 @@ const step = z.strictObject({
   layers: z.array(z.number().int().min(1)).optional(),
 });
 
-const gridBlueprint = z.strictObject({
-  format: z.literal('grid'),
+const startBlock = z.strictObject({
+  x: z.number().int().min(0),
+  y: z.number().int().min(0),
+  z: z.number().int().min(0),
+});
+
+/** Inhalt eines Behälters (Truhe, Trichter, Werfer …) an einer Position des Bauplans. */
+const container = z.strictObject({
+  x: z.number().int().min(0),
+  y: z.number().int().min(0),
+  z: z.number().int().min(0),
+  items: z.array(z.strictObject({ item: text, count: z.number().int().positive() })).min(1),
+});
+
+const blueprintCommon = {
   stateSyntax: z.enum(['java', 'bedrock']),
   /** Startblock, nullbasiert: x = Spalte (West→Ost), y = Ebene, z = Zeile (Nord→Süd). */
-  start: z.strictObject({
-    x: z.number().int().min(0),
-    y: z.number().int().min(0),
-    z: z.number().int().min(0),
-  }),
+  start: startBlock,
+  /** Was in Behältern liegen muss (z. B. Filter-Items eines Sortierers). */
+  containers: z.array(container).optional(),
+};
+
+/** Lesbares Zeichenraster – für von Hand gepflegte Farmen. */
+const gridBlueprint = z.strictObject({
+  format: z.literal('grid'),
+  ...blueprintCommon,
   /** Kürzel (genau ein Zeichen) → Blockzustand. */
   palette: z.record(z.string(), z.string()),
   /** layers[y][z] ist eine Zeile; jedes Zeichen ist ein Block. Ebene 1 = layers[0]. */
   layers: z.array(z.array(z.string()).min(1)).min(1),
 });
 
-const blueprint = gridBlueprint.superRefine((bp, ctx) => {
+/** Kompaktes Format für große Importe: Palettenliste + lauflängenkodierte Indizes. */
+const indexedBlueprint = z.strictObject({
+  format: z.literal('indexed'),
+  ...blueprintCommon,
+  size: z.strictObject({
+    x: z.number().int().positive(),
+    y: z.number().int().positive(),
+    z: z.number().int().positive(),
+  }),
+  /** Blockzustände; Index 0 ist immer "minecraft:air". */
+  palette: z.array(z.string()).min(2),
+  /** Paare [Palettenindex, Anzahl] hintereinander, Reihenfolge y → z → x. */
+  runs: z.array(z.number().int().min(0)),
+  /** Hinweise je Palettenindex, z. B. nicht übersetzbare Bedrock-Zustände. */
+  paletteNotes: z.record(z.string(), text).optional(),
+});
+
+type Ctx = z.core.$RefinementCtx;
+
+function checkGrid(bp: z.infer<typeof gridBlueprint>, ctx: Ctx): void {
   const air = new Set<string>([AIR_CHAR]);
   for (const [key, value] of Object.entries(bp.palette)) {
     if ([...key].length !== 1 || key === AIR_CHAR || /\s/.test(key)) {
@@ -167,6 +203,75 @@ const blueprint = gridBlueprint.superRefine((bp, ctx) => {
   } else if (air.has(startChar)) {
     ctx.addIssue({ code: 'custom', path: ['start'], message: 'Startblock darf nicht Luft sein' });
   }
+  checkContainers(bp.containers, { x: width, y: bp.layers.length, z: depth }, ctx);
+}
+
+function checkIndexed(bp: z.infer<typeof indexedBlueprint>, ctx: Ctx): void {
+  const air: boolean[] = [];
+  bp.palette.forEach((value, i) => {
+    try {
+      air[i] = isAir(parseBlockState(value, bp.stateSyntax));
+    } catch (e) {
+      air[i] = false;
+      ctx.addIssue({ code: 'custom', path: ['palette', i], message: e instanceof BlockStateError ? e.message : String(e) });
+    }
+  });
+  if (air[0] !== true) {
+    ctx.addIssue({ code: 'custom', path: ['palette', 0], message: 'Palettenindex 0 muss Luft sein' });
+  }
+  if (bp.runs.length % 2 !== 0) {
+    ctx.addIssue({ code: 'custom', path: ['runs'], message: 'Erwartet Paare aus Palettenindex und Anzahl' });
+    return;
+  }
+  const volume = bp.size.x * bp.size.y * bp.size.z;
+  const startIndex = (bp.start.y * bp.size.z + bp.start.z) * bp.size.x + bp.start.x;
+  const startInside = bp.start.x < bp.size.x && bp.start.y < bp.size.y && bp.start.z < bp.size.z;
+  let total = 0;
+  let startPalette = -1;
+  for (let i = 0; i < bp.runs.length; i += 2) {
+    const index = bp.runs[i]!;
+    const count = bp.runs[i + 1]!;
+    if (index >= bp.palette.length) {
+      ctx.addIssue({ code: 'custom', path: ['runs', i], message: `Palettenindex ${index} existiert nicht` });
+      return;
+    }
+    if (count === 0) {
+      ctx.addIssue({ code: 'custom', path: ['runs', i + 1], message: 'Anzahl 0 ist nicht erlaubt' });
+      return;
+    }
+    if (startInside && startIndex >= total && startIndex < total + count) startPalette = index;
+    total += count;
+  }
+  if (total !== volume) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['runs'],
+      message: `Die Läufe ergeben ${total} Blöcke, die Größe verlangt ${volume}`,
+    });
+  }
+  if (!startInside) {
+    ctx.addIssue({ code: 'custom', path: ['start'], message: 'Startblock liegt außerhalb des Bauplans' });
+  } else if (startPalette >= 0 && air[startPalette]) {
+    ctx.addIssue({ code: 'custom', path: ['start'], message: 'Startblock darf nicht Luft sein' });
+  }
+  checkContainers(bp.containers, bp.size, ctx);
+}
+
+function checkContainers(
+  containers: z.infer<typeof container>[] | undefined,
+  size: { x: number; y: number; z: number },
+  ctx: Ctx,
+): void {
+  containers?.forEach((c, i) => {
+    if (c.x >= size.x || c.y >= size.y || c.z >= size.z) {
+      ctx.addIssue({ code: 'custom', path: ['containers', i], message: 'Behälter liegt außerhalb des Bauplans' });
+    }
+  });
+}
+
+const blueprint = z.discriminatedUnion('format', [gridBlueprint, indexedBlueprint]).superRefine((bp, ctx) => {
+  if (bp.format === 'grid') checkGrid(bp, ctx);
+  else checkIndexed(bp, ctx);
 });
 
 const source = z.strictObject({
@@ -183,8 +288,9 @@ const schematicLink = z.strictObject({
   note: nullableText.optional(),
 });
 
-export const farmSchema = z
-  .strictObject({
+function farmObject(minSources: 0 | 1) {
+  return z
+    .strictObject({
     schema: z.literal(SCHEMA_VERSION),
     id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Nur Kleinbuchstaben, Ziffern und Bindestriche'),
     name: text,
@@ -218,15 +324,15 @@ export const farmSchema = z
     extras: z.array(
       z.strictObject({ item: text, count: z.number().int().positive(), note: nullableText.optional() }),
     ),
-    sources: z.array(source).min(1),
+    sources: z.array(source).min(minSources),
     /** Bekannte Schematic-Downloads (für „bitte selbst herunterladen“). */
     schematics: z.array(schematicLink).optional(),
   })
-  .superRefine((farm, ctx) => {
+    .superRefine((farm, ctx) => {
     if (farm.rate && farm.rate.source >= farm.sources.length) {
       ctx.addIssue({ code: 'custom', path: ['rate', 'source'], message: 'Verweist auf keine vorhandene Quelle' });
     }
-    const height = farm.blueprint?.layers.length ?? 0;
+    const height = farm.blueprint ? blueprintSize(farm.blueprint).y : 0;
     farm.steps.forEach((s, i) => {
       for (const layer of s.layers ?? []) {
         if (!farm.blueprint) {
@@ -264,10 +370,31 @@ export const farmSchema = z
       });
     }
   });
+}
+
+/** Farmen im Repo: mindestens eine Quelle ist Pflicht. */
+export const farmSchema = farmObject(1);
+
+/** Lokal importierte Farmen dürfen ohne Quelle auskommen (sie verlassen das Gerät nicht). */
+export const localFarmSchema = farmObject(0);
 
 export type Farm = z.infer<typeof farmSchema>;
 export type Blueprint = NonNullable<Farm['blueprint']>;
+export type GridBlueprint = Extract<Blueprint, { format: 'grid' }>;
+export type IndexedBlueprint = Extract<Blueprint, { format: 'indexed' }>;
+export type ContainerContent = NonNullable<Blueprint['containers']>[number];
 export type FarmSource = Farm['sources'][number];
+
+/** Größe eines Bauplans: x = Breite, y = Höhe (Ebenen), z = Tiefe. */
+export function blueprintSize(bp: {
+  format: string;
+  size?: { x: number; y: number; z: number };
+  layers?: string[][];
+}): { x: number; y: number; z: number } {
+  if (bp.size) return bp.size;
+  const layers = bp.layers ?? [];
+  return { x: [...(layers[0]?.[0] ?? '')].length, y: layers.length, z: layers[0]?.length ?? 0 };
+}
 
 export interface ValidationProblem {
   path: string;
@@ -276,8 +403,8 @@ export interface ValidationProblem {
 
 export type ValidationResult = { ok: true; farm: Farm } | { ok: false; problems: ValidationProblem[] };
 
-export function validateFarm(data: unknown): ValidationResult {
-  const result = farmSchema.safeParse(data);
+export function validateFarm(data: unknown, options: { local?: boolean } = {}): ValidationResult {
+  const result = (options.local ? localFarmSchema : farmSchema).safeParse(data);
   if (result.success) return { ok: true, farm: result.data };
   return {
     ok: false,

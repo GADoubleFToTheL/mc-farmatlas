@@ -21,9 +21,16 @@ export function Layout() {
             Farmatlas
           </Link>
           <Link
+            to="/import"
+            aria-label="Schematic importieren"
+            className="ml-auto grid size-11 place-items-center rounded-lg text-muted hover:bg-surface-2 hover:text-ink"
+          >
+            <Icon name="upload" className="size-6" />
+          </Link>
+          <Link
             to="/einstellungen"
             aria-label="Einstellungen und Backup"
-            className="-mr-2 ml-auto grid size-11 place-items-center rounded-lg text-muted hover:bg-surface-2 hover:text-ink"
+            className="-mr-2 grid size-11 place-items-center rounded-lg text-muted hover:bg-surface-2 hover:text-ink"
           >
             <Icon name="settings" className="size-6" />
           </Link>

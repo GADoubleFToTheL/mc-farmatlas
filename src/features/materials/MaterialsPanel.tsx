@@ -1,6 +1,13 @@
 import { useMemo, useState } from 'react';
 import { toggleInList, updateFarmState } from '../../db/store';
-import { breakdown, computeMaterials, formatBreakdown, sortedItems, totalSlots } from '../../lib/materials';
+import {
+  breakdown,
+  computeMaterials,
+  containerItems,
+  formatBreakdown,
+  sortedItems,
+  totalSlots,
+} from '../../lib/materials';
 import { displayName } from '../../lib/names';
 import type { Farm } from '../../lib/schema';
 import type { Structure } from '../../lib/structure';
@@ -76,6 +83,13 @@ export function MaterialsPanel({
   const checkedHere = farmState.checkedMaterials.filter((k) => k.startsWith(prefix)).length;
 
   const items = list ? sortedItems(list) : [];
+  const inContainers = useMemo(
+    () =>
+      structure
+        ? [...containerItems(structure, scope === 'gesamt' ? undefined : layer)].sort((a, b) => b[1] - a[1])
+        : [],
+    [structure, scope, layer],
+  );
   const showExtras = scope === 'gesamt' && farm.extras.length > 0;
 
   return (
@@ -116,7 +130,7 @@ export function MaterialsPanel({
         </p>
       )}
 
-      {list && items.length === 0 && list.fluids.water + list.fluids.lava === 0 && (
+      {list && items.length === 0 && inContainers.length === 0 && list.fluids.water + list.fluids.lava === 0 && (
         <p className="rounded-lg border border-dashed border-line p-3 text-sm text-muted">Für diese Ebene wird nichts gebraucht.</p>
       )}
 
@@ -161,6 +175,30 @@ export function MaterialsPanel({
               />
             )}
           </ul>
+        </section>
+      )}
+
+      {inContainers.length > 0 && (
+        <section>
+          <h3 className="mb-1.5 text-sm font-semibold text-muted">In Behältern (laut Schematic)</h3>
+          <ul className="grid gap-1.5 sm:grid-cols-2">
+            {inContainers.map(([item, count]) => {
+              const key = `${prefix}inhalt:${item}`;
+              return (
+                <Row
+                  key={key}
+                  checked={checked.has(key)}
+                  onToggle={() => toggle(key)}
+                  name={displayName(item)}
+                  count={String(count)}
+                  detail={formatBreakdown(breakdown(item, count)) || undefined}
+                />
+              );
+            })}
+          </ul>
+          <p className="mt-1.5 text-xs text-muted">
+            Welche Items in welchen Behälter gehören, zeigt der Bauplan beim Antippen des Behälters.
+          </p>
         </section>
       )}
 
