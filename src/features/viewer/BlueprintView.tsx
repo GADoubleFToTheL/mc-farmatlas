@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { blockIndex, paletteIndexAt } from '../../lib/structure';
 import { composeOrientation, isIdentity, NO_ORIENTATION, type Orientation } from '../../lib/transform';
-import { Button } from '../../ui/controls';
+import { Button, Segmented } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 import { BlockInfo } from './BlockInfo';
 import { Compass } from './Compass';
@@ -10,6 +10,9 @@ import { LayerStepper } from './LayerStepper';
 import { Legend, SymbolHelp } from './Legend';
 import type { LoadedBlueprint } from './useBlueprint';
 import { buildLegend } from './visuals';
+
+// three.js ist groß – erst laden, wenn die 3D-Ansicht geöffnet wird.
+const Preview3D = lazy(() => import('./Preview3D'));
 
 /** Ebenen-Viewer mit Bedienelementen, Blockinfo und Legende. */
 export function BlueprintView({
@@ -20,6 +23,7 @@ export function BlueprintView({
   stepsForLayer,
   orientation,
   onOrientationChange,
+  children,
 }: {
   blueprint: LoadedBlueprint;
   /** Nullbasiert. */
@@ -29,12 +33,15 @@ export function BlueprintView({
   stepsForLayer: string[];
   orientation: Orientation;
   onOrientationChange: (orientation: Orientation) => void;
+  /** Zusätzlicher Inhalt unter der Ausrichtung, z. B. der Export. */
+  children?: ReactNode;
 }) {
   const { structure, visuals, start, contents, markers } = blueprint;
   const canvas = useRef<LayerCanvasHandle>(null);
   const [showBelow, setShowBelow] = useState(true);
   const [selected, setSelected] = useState<CellPos | null>(null);
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
+  const [mode, setMode] = useState<'2d' | '3d'>('2d');
   const total = structure.size.y;
 
   const legend = useMemo(() => buildLegend(structure, visuals, layer), [structure, visuals, layer]);
@@ -52,7 +59,19 @@ export function BlueprintView({
 
   return (
     <div className="flex flex-col gap-3">
-      <LayerCanvas
+      <Segmented
+        label="Ansicht"
+        className="self-start"
+        value={mode}
+        onChange={setMode}
+        options={[
+          { value: '2d', label: 'Ebene' },
+          { value: '3d', label: '3D-Vorschau' },
+        ]}
+      />
+
+      {mode === '2d' ? (
+        <LayerCanvas
           ref={canvas}
           structure={structure}
           visuals={visuals}
@@ -67,10 +86,28 @@ export function BlueprintView({
           className="block w-full rounded-xl border border-line"
           style={{ height: `clamp(240px, min(${Math.round(aspect * 100)}vw, ${structure.size.z * 56 + 44}px), 62dvh)` }}
         />
+      ) : (
+        <Suspense fallback={<div className="grid h-[52dvh] min-h-64 place-items-center rounded-xl border border-line text-sm text-muted">Lade 3D-Vorschau …</div>}>
+          <Preview3D
+            structure={structure}
+            visuals={visuals}
+            maxLayer={layer}
+            start={start}
+            className="h-[52dvh] min-h-64 overflow-hidden rounded-xl border border-line bg-surface"
+          />
+        </Suspense>
+      )}
 
       <LayerStepper layer={layer} total={total} onChange={change} done={doneLayers.includes(layer + 1)} />
 
-      <div className="flex flex-wrap gap-2">
+      {mode === '3d' && (
+        <p className="text-xs leading-relaxed text-muted">
+          Gezeigt werden die Ebenen 1 bis {layer + 1}. Ziehen dreht, zwei Finger (oder Mausrad) zoomen. Der grüne Pfeil am Boden zeigt
+          nach Norden, der kleine grüne Würfel markiert den Startblock.
+        </p>
+      )}
+
+      <div className={mode === '2d' ? 'flex flex-wrap gap-2' : 'hidden'}>
         <Button aria-pressed={showBelow} onClick={() => setShowBelow(!showBelow)} className={showBelow ? 'border-accent text-accent' : ''}>
           <Icon name="layers" />
           Ebene darunter {showBelow ? 'an' : 'aus'}
@@ -131,7 +168,9 @@ export function BlueprintView({
         )}
       </div>
 
-      {selected && (
+      {children}
+
+      {selected && mode === '2d' && (
         <BlockInfo
           visual={visuals[paletteIndexAt(structure, selected.x, layer, selected.z)] ?? null}
           note={structure.paletteNotes?.[paletteIndexAt(structure, selected.x, layer, selected.z)]}

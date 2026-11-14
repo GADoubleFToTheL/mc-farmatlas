@@ -9,6 +9,8 @@ import { Icon, type IconName } from '../../ui/Icon';
 import { MaterialsPanel } from '../materials/MaterialsPanel';
 import { BlueprintView } from '../viewer/BlueprintView';
 import { useBlueprint } from '../viewer/useBlueprint';
+import { isIdentity } from '../../lib/transform';
+import { ExportCard } from './ExportCard';
 import { FarmInfo } from './FarmInfo';
 import { MyNotes } from './MyNotes';
 
@@ -190,7 +192,14 @@ function FarmPageContent({ summary, tab: tabParam }: { summary: FarmSummary; tab
             stepsForLayer={stepsForLayer}
             orientation={farmState.orientation}
             onOrientationChange={(orientation) => updateFarmState(farm.id, { orientation })}
-          />
+          >
+            <ExportCard
+              structure={blueprint.structure}
+              name={farm.name}
+              bedrockVersion={settings.versions.bedrock}
+              rotated={!isIdentity(farmState.orientation)}
+            />
+          </BlueprintView>
         ) : (
           <MissingBlueprint farmId={farm.id} />
         ))}

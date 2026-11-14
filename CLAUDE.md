@@ -46,7 +46,8 @@ Bedrock und Java, jeweils klar gekennzeichnet.
 | Ordner | Inhalt |
 |---|---|
 | `data/farms/` | eine JSON-Datei pro Farm |
-| `src/lib/` | Kernlogik ohne UI: `schema`, `version`, `blockstate`, `structure`, `traits`, `materials`, `catalog`, `userdata`, `names`, `blockstyle`, `bedrock`, `dataversion`, `localfarm` |
+| `src/lib/` | Kernlogik ohne UI: `schema`, `version`, `blockstate`, `structure`, `traits`, `materials`, `catalog`, `userdata`, `names`, `blockstyle`, `bedrock`, `dataversion`, `localfarm`, `transform`, `nbt` |
+| `src/lib/exporters/` | Export als `.litematic` und `.mcstructure` |
 | `src/lib/importers/` | Schematic-Parser (`schematic.ts`) und echte Testdateien (`fixtures/`) |
 | `src/db/` | IndexedDB (`database.ts`) und Zustand im Speicher (`store.ts`) |
 | `src/features/` | `catalog`, `farm`, `viewer`, `materials`, `build`, `import`, `settings` |
@@ -78,6 +79,18 @@ Wichtige Zusammenhänge:
   Import ist entweder eine eigene Farm (`lokal-…`) oder hängt an einer Katalog-Farm ohne Bauplan
   (`import:<id>`); `data/farms.ts` führt beides zum Katalog zusammen.
 - Testdateien: nur frei weitergebbare echte Dateien ins Repo (siehe `fixtures/README.md`).
+
+### Drehen, Spiegeln, Export
+
+- `transform.ts` dreht/spiegelt Positionen und Blockzustände (`facing`, `axis`, `rotation`,
+  Seiten-Eigenschaften, Schienenformen, links/rechts bei Treppen, Türen, Truhen). Die gewählte
+  Ausrichtung liegt je Farm in `farmState.orientation` (erst spiegeln, dann drehen); der Bauplan
+  in der Farm-Datei bleibt unverändert.
+- `exporters/litematic.ts` schreibt Litematica-Format 6 mit Datenversion 1.21 (liest jede
+  aktuelle Mod-Version). Die Tests lesen jede exportierte Datei mit dem Importer zurück.
+- `exporters/mcstructure.ts` nutzt `javaToBedrock` aus `bedrock.ts`. Im Spiel ungetestet –
+  die Oberfläche sagt das auch. Neue Blöcke dort nur mit belegter Zuordnung ergänzen.
+- `Preview3D.tsx` (three.js) wird erst beim Öffnen der 3D-Ansicht geladen.
 
 ## Datenschema
 

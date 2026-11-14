@@ -16,7 +16,7 @@ Das Projekt entsteht in Phasen:
 | 1 | Übersicht, Detailseite, Ebenen-Viewer, Materialliste, Bau-Modus, erste Farmen | fertig |
 | 2 | Import von Schematic-Dateien (`.litematic`, `.schem`, `.nbt`, `.mcstructure`) | fertig |
 | R | Recherche weiterer Farmen für Bedrock und Java ([Bericht](docs/recherche-bericht.md)) | fertig |
-| 3 | 3D-Vorschau, Drehen/Spiegeln, Export, Notizen | offen |
+| 3 | 3D-Vorschau, Drehen/Spiegeln, Export, Notizen | fertig |
 
 ## Was die App kann
 
@@ -35,6 +35,13 @@ Das Projekt entsteht in Phasen:
   `.nbt`- (Java) oder `.mcstructure`-Datei (Bedrock). Bauplan und Materialliste entstehen automatisch.
   Die Datei bleibt auf deinem Gerät. Bei Farmen mit dem Hinweis „Bauplan fehlt“ kannst du den
   importierten Bauplan direkt an die Farm hängen – dann stehen Steckbrief und Quellen daneben.
+
+- **Drehen und Spiegeln:** Im Reiter „Bauplan“ drehst du die Farm in die Richtung, in der sie bei dir
+  stehen soll. Die Ausrichtung aller Blöcke (Kolben, Beobachter, Trichter, Schienen …) dreht mit.
+- **3D-Vorschau:** Zeigt den Bauplan bis zur gewählten Ebene als einfache farbige Blöcke.
+- **Export:** Als `.mcstructure` für den Bedrock-Konstruktionsblock (noch nicht im Spiel getestet)
+  oder als `.litematic` für die Java-Mod Litematica.
+- **Notizen:** Pro Farm eigene Notizen und die Koordinaten, an denen sie in deiner Welt steht.
 
 ### Symbole im Bauplan
 
