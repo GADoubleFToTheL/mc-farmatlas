@@ -152,7 +152,8 @@ export function matchesFilter(s: FarmSummary, f: CatalogFilter, favorites: Reado
   const tokens = normalize(f.query).split(/\s+/).filter(Boolean);
   if (!tokens.every((t) => s.searchText.includes(t))) return false;
   if (f.categories.length > 0 && !f.categories.includes(farm.category)) return false;
-  if (f.edition !== 'alle') {
+  // Eigene Importe versteckt der Editionsfilter nie – sonst sucht man sie nach dem Import vergeblich.
+  if (f.edition !== 'alle' && s.local?.kind !== 'eigen') {
     const fit = versionFit(farm, f.edition, f.myVersions[f.edition]);
     if (fit === 'andere-edition') return false;
     if (f.versionOnly && fit !== 'passt') return false;

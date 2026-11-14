@@ -127,6 +127,17 @@ describe('matchesFilter', () => {
     expect(matchesFilter(iron, filter({ edition: 'java', versionOnly: true }), none)).toBe(true);
   });
 
+  it('zeigt eigene Importe unabhängig vom Editionsfilter', () => {
+    const info = {
+      fileName: 'a.litematic', format: 'litematic' as const, edition: 'java' as const, mcVersion: '1.21',
+      mcVersionExact: true, author: null, blockCount: 1, warnings: [], importedAt: 0,
+    };
+    const own = summarize(iron.farm, { kind: 'eigen', recordId: 'lokal-x', info });
+    const attached = summarize(iron.farm, { kind: 'angehaengt', recordId: 'import:eisen', info });
+    expect(matchesFilter(own, filter({ versionOnly: true }), none)).toBe(true);
+    expect(matchesFilter(attached, filter(), none)).toBe(false);
+  });
+
   it('filtert nach Kategorie, Schwierigkeit, Größe, AFK, Bauplan und Favoriten', () => {
     expect(matchesFilter(iron, { ...all, categories: ['pflanzen'] }, none)).toBe(false);
     expect(matchesFilter(iron, { ...all, categories: ['pflanzen', 'mobs-xp'] }, none)).toBe(true);

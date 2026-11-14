@@ -17,6 +17,7 @@ Bedrock und Java, jeweils klar gekennzeichnet.
 | `npm test` | Vitest |
 | `npm run build` | Typprüfung + Produktions-Build nach `dist/` |
 | `npm run check` | alles zusammen – muss vor jedem Commit grün sein |
+| `npm run import -- <datei> --trocken` | Schematic lesen und zusammenfassen (siehe `--hilfe`) |
 | `npm run preview` | gebauten Stand unter `http://localhost:4173/mc-farmatlas/` ansehen |
 
 ## Regeln für Inhalte (wichtiger als alles andere)
@@ -45,11 +46,12 @@ Bedrock und Java, jeweils klar gekennzeichnet.
 | Ordner | Inhalt |
 |---|---|
 | `data/farms/` | eine JSON-Datei pro Farm |
-| `src/lib/` | Kernlogik ohne UI: `schema`, `version`, `blockstate`, `structure`, `traits`, `materials`, `catalog`, `userdata`, `names`, `blockstyle` |
+| `src/lib/` | Kernlogik ohne UI: `schema`, `version`, `blockstate`, `structure`, `traits`, `materials`, `catalog`, `userdata`, `names`, `blockstyle`, `bedrock`, `dataversion`, `localfarm` |
+| `src/lib/importers/` | Schematic-Parser (`schematic.ts`) und echte Testdateien (`fixtures/`) |
 | `src/db/` | IndexedDB (`database.ts`) und Zustand im Speicher (`store.ts`) |
-| `src/features/` | `catalog`, `farm`, `viewer`, `materials`, `build`, `settings` |
+| `src/features/` | `catalog`, `farm`, `viewer`, `materials`, `build`, `import`, `settings` |
 | `src/ui/` | gemeinsame Bausteine (Knöpfe, Chips, Blatt, Icons) |
-| `scripts/` | Node-Skripte (`validate.ts`) |
+| `scripts/` | Node-Skripte (`validate.ts`, `import.ts`) |
 
 Wichtige Zusammenhänge:
 
@@ -61,6 +63,21 @@ Wichtige Zusammenhänge:
 - `materials.ts` zählt Wasser- und Lavaquellen getrennt von Items; fließende Flüssigkeit kostet nichts.
 - Neue Blöcke: deutschen Namen in `names.ts`, Farbe in `blockstyle.ts` ergänzen.
   `npm run validate` gibt einen Hinweis, wenn einer Farm ein deutscher Name fehlt.
+
+### Schematic-Import
+
+- `importers/schematic.ts` läuft in Browser und Node. Java-Formate liest `minecraft-block-reader`
+  (WebAssembly; in `vite.config.ts` aus `optimizeDeps` ausgeschlossen). `.mcstructure` lesen wir
+  selbst, weil die Bibliothek Bedrock-Zustände nur lückenhaft übersetzt.
+- `bedrock.ts` übersetzt Bedrock-Zustände in Java-Schreibweise. Die Zuordnung ist gegen das Wiki
+  und die GeyserMC-Tabelle geprüft. Eigenheiten: Kolben zählen Richtungen anders (2 = Süden,
+  3 = Norden), Wandfackeln speichern die Gegenrichtung, Türen sind um 90° gedreht. Was sich nicht
+  übersetzen lässt, landet als Hinweis am Paletteneintrag – nie stillschweigend verwerfen.
+- Importierte Baupläne sind intern immer `stateSyntax: "java"`.
+- Lokale Importe (`localfarm.ts`) liegen in IndexedDB (`userFarms`) und stecken im Backup. Ein
+  Import ist entweder eine eigene Farm (`lokal-…`) oder hängt an einer Katalog-Farm ohne Bauplan
+  (`import:<id>`); `data/farms.ts` führt beides zum Katalog zusammen.
+- Testdateien: nur frei weitergebbare echte Dateien ins Repo (siehe `fixtures/README.md`).
 
 ## Datenschema
 
@@ -76,6 +93,9 @@ Quelle der Wahrheit ist `src/lib/schema.ts` (zod). Kurzfassung:
   - Achsen: x = Spalte (Westen → Osten), z = Zeile (Norden oben), y = Ebene (unten → oben)
   - `start`: nullbasierter Startblock, darf nicht Luft sein
   - `stateSyntax`: `java` (`minecraft:repeater[facing=north,delay=2]`) oder `bedrock`
+  - zweites Format `"format": "indexed"` für große Importe: `size`, `palette` als Liste
+    (Index 0 = Luft) und `runs` (Paare aus Palettenindex und Anzahl, Reihenfolge y → z → x)
+  - optional `containers`: Inhalt von Behältern je Position (z. B. Filter-Items)
 - `blueprintOrigin` (Pflicht bei Bauplan): `quelle` (aus der Quelle übernommen),
   `standarddesign` (eigene Umsetzung eines Standarddesigns) oder `import`, jeweils mit Erklärung
 - `extras`: was nicht im Bauplan steht (Wassereimer, Mobs, Werkzeug)

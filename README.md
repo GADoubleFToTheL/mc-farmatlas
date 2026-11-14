@@ -14,7 +14,7 @@ Das Projekt entsteht in Phasen:
 |---|---|---|
 | 0 | Grundgerüst, installierbare App, automatische Veröffentlichung | fertig |
 | 1 | Übersicht, Detailseite, Ebenen-Viewer, Materialliste, Bau-Modus, erste Farmen | fertig |
-| 2 | Import von Schematic-Dateien (`.litematic`, `.schem`, `.nbt`, `.mcstructure`) | offen |
+| 2 | Import von Schematic-Dateien (`.litematic`, `.schem`, `.nbt`, `.mcstructure`) | fertig |
 | R | Recherche weiterer Farmen für Bedrock und Java | offen |
 | 3 | 3D-Vorschau, Drehen/Spiegeln, Export, Notizen | offen |
 
@@ -31,6 +31,11 @@ Das Projekt entsteht in Phasen:
 - **Backup:** In den Einstellungen (Zahnrad) lassen sich alle eigenen Daten als Datei speichern und
   auf einem anderen Gerät wieder laden.
 
+- **Schematic-Import:** Über das Pfeil-Symbol oben rechts lädst du eine `.litematic`-, `.schem`-,
+  `.nbt`- (Java) oder `.mcstructure`-Datei (Bedrock). Bauplan und Materialliste entstehen automatisch.
+  Die Datei bleibt auf deinem Gerät. Bei Farmen mit dem Hinweis „Bauplan fehlt“ kannst du den
+  importierten Bauplan direkt an die Farm hängen – dann stehen Steckbrief und Quellen daneben.
+
 ### Symbole im Bauplan
 
 | Symbol | Bedeutung |
@@ -42,6 +47,7 @@ Das Projekt entsteht in Phasen:
 | halb gefülltes Feld | obere bzw. untere Stufe |
 | Blau mit Rahmen / gestreift | Wasserquelle / fließendes Wasser |
 | grüne Ecke | Startblock |
+| weiße Raute | Behälter mit Inhalt (nur bei Importen) – antippen zeigt, was hineingehört |
 
 ## App aufs Handy holen
 
@@ -86,6 +92,21 @@ Weitere Befehle:
 | `npm test` | führt die Tests aus |
 | `npm run build` | baut die App nach `dist/` |
 | `npm run check` | alles zusammen |
+
+### Schematic als Farm-Datei ins Repo schreiben
+
+```bash
+npm run import -- meine-farm.litematic --trocken
+```
+
+Der Trockenlauf zeigt nur, was in der Datei steckt. Zum Schreiben nach `data/farms/` braucht das
+Skript eine Quelle und die Bestätigung, dass der Ersteller die Weitergabe erlaubt:
+
+```bash
+npm run import -- meine-farm.litematic --quelle https://beispiel.de/tutorial --autor "Name" --weitergabe-erlaubt
+```
+
+Ohne diese Erlaubnis gehört die Datei nicht ins öffentliche Repo – dann einfach in der App importieren.
 
 Wie eine neue Farm angelegt wird, steht in [CLAUDE.md](CLAUDE.md) im Abschnitt
 „So fügst du eine neue Farm hinzu“.
