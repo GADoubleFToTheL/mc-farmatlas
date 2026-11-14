@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "id": "zuckerrohr-beobachter-kolben",
+  "name": "Zuckerrohrfarm (Beobachter + Kolben)",
+  "category": "pflanzen",
+  "outputs": ["minecraft:sugar_cane"],
+  "tags": ["Papier", "Zucker", "Raketen"],
+  "editions": {
+    "bedrock": { "from": "1.21.0", "to": "26.62" },
+    "java": { "from": "1.21", "to": "26.3" }
+  },
+  "difficulty": 2,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": ["overworld", "end"],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": {
+      "required": false,
+      "distance": null,
+      "note": "Zuckerrohr wächst nur in geladenen Chunks innerhalb der Simulationsdistanz. Die Farm läuft nebenbei, solange du in der Nähe bist."
+    },
+    "mobs": [],
+    "simulationDistance": "Die Farm muss innerhalb der Simulationsdistanz liegen.",
+    "chunkAligned": false
+  },
+  "principle": "Zuckerrohr wächst von selbst bis zu drei Blöcke hoch. Jeder Beobachter schaut auf die Stelle, an der der dritte Block erscheint. Wächst dort etwas, gibt er einen kurzen Impuls an den Redstone-Staub hinter sich. Der Staub versorgt die Blöcke hinter den Kolben mit Strom, und alle Kolben stoßen gleichzeitig das Zuckerrohr auf Höhe des zweiten Blocks ab. Der unterste Block bleibt stehen und wächst nach. Das abgebrochene Zuckerrohr fällt in den Wasserkanal davor und treibt zum Trichter.",
+  "steps": [
+    { "text": "Setze die Truhe. Sie ist der Startblock und liegt später unter dem Trichter – halte den Zugang zu ihr frei.", "layers": [1] },
+    { "text": "Setze den Trichter auf die Truhe (schleichen und auf die Truhe klicken) und lege westlich davon den Boden des Wasserkanals.", "layers": [2] },
+    { "text": "Baue die Glaswände, lege die Erdreihe und setze die Wasserquelle ganz im Westen des Kanals. Das Wasser fließt genau bis über den Trichter.", "layers": [3] },
+    { "text": "Pflanze Zuckerrohr auf jeden Erdblock, ziehe die Glaswand höher und setze die Stützreihe hinter das Zuckerrohr.", "layers": [4] },
+    { "text": "Setze die Kolben mit der Stoßfläche zum Zuckerrohr (nach Norden) und dahinter eine Reihe fester Blöcke.", "layers": [5] },
+    { "text": "Setze die Beobachter auf die Kolben, Gesicht zum Zuckerrohr (nach Norden). Lege Redstone-Staub auf die festen Blöcke dahinter.", "layers": [6] }
+  ],
+  "pitfalls": [
+    "Beobachter falsch herum: Das Gesicht muss zum Zuckerrohr zeigen, der rote Punkt nach hinten zum Redstone-Staub.",
+    "Die Blöcke unter dem Redstone-Staub müssen fest und undurchsichtig sein (kein Glas), sonst bekommen die Kolben keinen Strom.",
+    "Nicht verlustfrei: Ein Teil des Zuckerrohrs bleibt auf der Erde liegen und muss von Hand eingesammelt werden.",
+    "Der Wasserkanal darf höchstens acht Felder lang sein, weiter fließt Wasser nicht."
+  ],
+  "editionNotes": {
+    "bedrock": "In Bedrock bricht Zuckerrohr sofort ab, wenn das Wasser neben seinem Erdblock verschwindet – den Kanal also nicht nachträglich umbauen.",
+    "java": null
+  },
+  "blueprint": {
+    "format": "grid",
+    "stateSyntax": "java",
+    "start": { "x": 8, "y": 0, "z": 1 },
+    "palette": {
+      "T": "minecraft:chest[facing=north]",
+      "H": "minecraft:hopper[facing=down]",
+      "S": "minecraft:stone",
+      "G": "minecraft:glass",
+      "D": "minecraft:dirt",
+      "W": "minecraft:water[level=0]",
+      "1": "minecraft:water[level=1]",
+      "2": "minecraft:water[level=2]",
+      "3": "minecraft:water[level=3]",
+      "4": "minecraft:water[level=4]",
+      "5": "minecraft:water[level=5]",
+      "6": "minecraft:water[level=6]",
+      "7": "minecraft:water[level=7]",
+      "C": "minecraft:sugar_cane",
+      "P": "minecraft:piston[facing=north]",
+      "O": "minecraft:observer[facing=north]",
+      "R": "minecraft:redstone_wire"
+    },
+    "layers": [
+      ["..........", "........T.", "..........", "..........", ".........."],
+      ["..........", ".SSSSSSSH.", "..........", "..........", ".........."],
+      [".GGGGGGGG.", "GW1234567G", ".DDDDDDDD.", "..........", ".........."],
+      [".GGGGGGGG.", "G........G", ".CCCCCCCC.", ".SSSSSSSS.", ".........."],
+      [".GGGGGGGG.", "..........", "..........", ".PPPPPPPP.", ".SSSSSSSS."],
+      ["..........", "..........", "..........", ".OOOOOOOO.", ".RRRRRRRR."]
+    ]
+  },
+  "blueprintOrigin": {
+    "kind": "standarddesign",
+    "note": "Eigene Umsetzung des verbreiteten Standarddesigns (Kolben auf Höhe 2, Beobachter auf Höhe 3, Wasserkanal mit einem Trichter), wie es das Minecraft Wiki beschreibt. Noch nicht im Spiel getestet."
+  },
+  "extras": [
+    { "item": "minecraft:water_bucket", "count": 1 }
+  ],
+  "sources": [
+    {
+      "title": "Tutorial: Sugar cane farming",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Sugar_cane_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}

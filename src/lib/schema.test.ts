@@ -35,6 +35,7 @@ function baseFarm(): Record<string, unknown> {
         ['.P', '..'],
       ],
     },
+    blueprintOrigin: { kind: 'standarddesign', note: 'Testplan' },
     extras: [{ item: 'minecraft:water_bucket', count: 1 }],
     sources: [{ title: 'Quelle', author: 'Jemand', url: 'https://example.org/farm' }],
   };
@@ -51,7 +52,13 @@ describe('farmSchema', () => {
   });
 
   it('akzeptiert eine Farm ohne Bauplan mit Maßen laut Quelle', () => {
-    const farm = { ...baseFarm(), blueprint: null, steps: [], size: { width: 9, height: 12, depth: 9 } };
+    const farm = {
+      ...baseFarm(),
+      blueprint: null,
+      blueprintOrigin: null,
+      steps: [],
+      size: { width: 9, height: 12, depth: 9 },
+    };
     expect(problems(farm)).toEqual([]);
   });
 
@@ -107,6 +114,11 @@ describe('farmSchema', () => {
     const g = baseFarm();
     (g.blueprint as { start: object }).start = { x: 5, y: 0, z: 0 };
     expect(problems(g).join()).toContain('außerhalb');
+  });
+
+  it('verlangt die Herkunft des Bauplans', () => {
+    expect(problems({ ...baseFarm(), blueprintOrigin: null }).join()).toContain('Herkunft');
+    expect(problems({ ...baseFarm(), blueprint: null, steps: [] }).join()).toContain('Herkunft ohne Bauplan');
   });
 
   it('prüft Ebenenverweise in den Bauschritten', () => {

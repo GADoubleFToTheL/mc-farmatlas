@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "id": "eisenfarm",
+  "name": "Eisenfarm (Platzhalter für die Entwicklung)",
+  "category": "mobs-xp",
+  "outputs": ["minecraft:iron_ingot", "minecraft:poppy"],
+  "editions": { "java": { "from": "1.21", "to": "26.3" } },
+  "difficulty": 4,
+  "size": { "width": 15, "height": 20, "depth": 15 },
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": ["overworld"],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": { "required": true, "distance": null, "note": null },
+    "mobs": ["3 Dorfbewohner", "1 Zombie"],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Platzhalter – wird in Phase 1c durch recherchierte Einträge ersetzt.",
+  "steps": [],
+  "pitfalls": [],
+  "blueprint": null,
+  "extras": [],
+  "sources": [{ "title": "Tutorial: Iron golem farming", "author": "Minecraft Wiki", "url": "https://minecraft.wiki/w/Tutorial:Iron_golem_farming" }]
+}

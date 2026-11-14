@@ -29,6 +29,15 @@ export type Status = (typeof STATUSES)[number];
 export const DIMENSIONS = ['overworld', 'nether', 'end'] as const;
 export type Dimension = (typeof DIMENSIONS)[number];
 
+/**
+ * Woher der Bauplan stammt:
+ *  - quelle:         direkt aus einem Schema/Plan der verlinkten Quelle übernommen
+ *  - standarddesign: eigene Umsetzung eines weit verbreiteten Standarddesigns
+ *  - import:         aus einer Schematic-Datei importiert
+ */
+export const BLUEPRINT_ORIGINS = ['quelle', 'standarddesign', 'import'] as const;
+export type BlueprintOrigin = (typeof BLUEPRINT_ORIGINS)[number];
+
 export const SCHEMATIC_ACCESS = ['frei', 'login', 'discord', 'bezahlt', 'unklar'] as const;
 
 /** Zeichen für Luft im Zeichenraster. */
@@ -203,6 +212,8 @@ export const farmSchema = z
     pitfalls: z.array(text),
     editionNotes: z.strictObject({ java: nullableText.optional(), bedrock: nullableText.optional() }).optional(),
     blueprint: blueprint.nullable(),
+    /** Pflicht, sobald ein Bauplan vorhanden ist. */
+    blueprintOrigin: z.strictObject({ kind: z.enum(BLUEPRINT_ORIGINS), note: text }).nullable().optional(),
     /** Was nicht im Bauplan steht: Wassereimer, Lava, Mobs, Werkzeug. `item` ist eine ID oder freier Text. */
     extras: z.array(
       z.strictObject({ item: text, count: z.number().int().positive(), note: nullableText.optional() }),
@@ -235,6 +246,16 @@ export const farmSchema = z
         }
       }
     });
+    if (farm.blueprint && !farm.blueprintOrigin) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['blueprintOrigin'],
+        message: 'Bei vorhandenem Bauplan muss die Herkunft angegeben werden',
+      });
+    }
+    if (!farm.blueprint && farm.blueprintOrigin) {
+      ctx.addIssue({ code: 'custom', path: ['blueprintOrigin'], message: 'Herkunft ohne Bauplan angegeben' });
+    }
     if (farm.blueprint && farm.size) {
       ctx.addIssue({
         code: 'custom',

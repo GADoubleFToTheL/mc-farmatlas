@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "id": "bruchstein-generator-graben",
+  "name": "Bruchstein-Generator (kompakter Graben)",
+  "category": "rohstoffe",
+  "outputs": ["minecraft:cobblestone"],
+  "tags": ["Cobblestone", "Stein", "Generator"],
+  "editions": {
+    "bedrock": { "from": "1.21.0", "to": "26.62" },
+    "java": { "from": "1.21", "to": "26.3" }
+  },
+  "difficulty": 1,
+  "rate": null,
+  "status": "ungeprueft",
+  "requirements": {
+    "dimension": ["overworld", "end"],
+    "biome": null,
+    "yLevel": null,
+    "specialLocation": null,
+    "afk": { "required": false, "distance": null, "note": "Du baust den Bruchstein selbst mit der Spitzhacke ab." },
+    "mobs": [],
+    "simulationDistance": null,
+    "chunkAligned": false
+  },
+  "principle": "Trifft fließende Lava seitlich auf Wasser, wird sie zu Bruchstein. Der neue Block trennt die beiden Flüssigkeiten wieder. Baust du ihn ab, fließt die Lava nach und es entsteht sofort der nächste Block. Das Loch unter dem fließenden Wasser sorgt dafür, dass das Wasser nach unten abläuft und nie bis zur Lavaquelle kommt – sonst würde aus der Quelle Obsidian.",
+  "steps": [
+    { "text": "Am einfachsten gräbst du den Graben direkt in den Boden: vier Blöcke lang und einen tief. Der Stein im Plan steht für jeden nicht brennbaren Block – nimm kein Holz.", "layers": [3] },
+    { "text": "Grabe das zweite Feld von Westen einen Block tiefer. In dieses Loch läuft später das Wasser ab.", "layers": [2] },
+    { "text": "Setze zuerst das Wasser ins westliche Ende des Grabens. Es fließt ein Feld weit und fällt dann ins Loch.", "layers": [3] },
+    { "text": "Setze erst danach die Lava ins östliche Ende. Auf dem freien Feld zwischen Wasser und Lava entsteht der Bruchstein von selbst – dort nichts platzieren.", "layers": [3] },
+    { "text": "Die Lücke in der südlichen Reihe ist dein Standplatz: Von dort baust du den Bruchstein ab.", "layers": [3] }
+  ],
+  "pitfalls": [
+    "Lava vor dem Wasser gesetzt: Dann kann die Lava bis ans Wasser fließen, bevor es abläuft. Immer erst Wasser, dann Lava.",
+    "Loch vergessen oder an der falschen Stelle: Das Wasser erreicht die Lavaquelle und macht daraus Obsidian.",
+    "Ein Teil des Bruchsteins fällt in die Lava und verbrennt. Eine Stufe über der Lava verringert den Verlust.",
+    "Im Nether funktioniert der Generator nicht, weil Wasser dort verdampft."
+  ],
+  "blueprint": {
+    "format": "grid",
+    "stateSyntax": "java",
+    "start": { "x": 1, "y": 2, "z": 1 },
+    "palette": {
+      "S": "minecraft:stone",
+      "W": "minecraft:water[level=0]",
+      "w": "minecraft:water[level=1]",
+      "v": "minecraft:water[level=8]",
+      "L": "minecraft:lava[level=0]"
+    },
+    "layers": [
+      ["SSSSSS", "SSSSSS", "SSSSSS"],
+      ["SSSSSS", "SSvSSS", "SSSSSS"],
+      ["SSSSSS", "SWw.LS", "SSS.SS"]
+    ]
+  },
+  "blueprintOrigin": {
+    "kind": "quelle",
+    "note": "Übernommen aus den Schemata „Compact Trench CSG (A-1/A-2)“ im Minecraft Wiki. Dort steht „beliebiger Block“ um den Graben; hier als Stein dargestellt."
+  },
+  "extras": [
+    { "item": "minecraft:water_bucket", "count": 1 },
+    { "item": "minecraft:lava_bucket", "count": 1 },
+    { "item": "Spitzhacke", "count": 1 }
+  ],
+  "sources": [
+    {
+      "title": "Tutorial: Cobblestone farming – Basic generators",
+      "author": "Minecraft Wiki",
+      "url": "https://minecraft.wiki/w/Tutorial:Cobblestone_farming",
+      "license": "CC BY-NC-SA 3.0"
+    }
+  ]
+}
