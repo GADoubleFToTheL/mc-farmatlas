@@ -17,6 +17,7 @@ Das Projekt entsteht in Phasen:
 | 2 | Import von Schematic-Dateien (`.litematic`, `.schem`, `.nbt`, `.mcstructure`) | fertig |
 | R | Recherche weiterer Farmen für Bedrock und Java ([Bericht](docs/recherche-bericht.md)) | fertig |
 | 3 | 3D-Vorschau, Drehen/Spiegeln, Export, Notizen | fertig |
+| 4 | Blöcke wie im Spiel (Original-Texturen aufs Gerät laden), 3D-Ansicht im Bau-Modus | fertig |
 
 ## Was die App kann
 
@@ -28,6 +29,8 @@ Das Projekt entsteht in Phasen:
   lässt sich blass einblenden. Das Lineal zählt vom Startblock aus.
 - **Materialliste:** gesamt oder pro Ebene, umgerechnet in Stacks und Shulkerkisten, zum Abhaken.
 - **Bau-Modus:** Vollbild, Ebene für Ebene abhaken, der Bildschirm bleibt an, der Fortschritt bleibt gespeichert.
+  Er startet in der 3D-Ansicht: Was schon gebaut ist, steht fest da, der Rest der Farm ist blass
+  angedeutet. Oben links wechselst du zur Ebenen-Ansicht von oben.
 - **Backup:** In den Einstellungen (Zahnrad) lassen sich alle eigenen Daten als Datei speichern und
   auf einem anderen Gerät wieder laden.
 
@@ -38,12 +41,40 @@ Das Projekt entsteht in Phasen:
 
 - **Drehen und Spiegeln:** Im Reiter „Bauplan“ drehst du die Farm in die Richtung, in der sie bei dir
   stehen soll. Die Ausrichtung aller Blöcke (Kolben, Beobachter, Trichter, Schienen …) dreht mit.
-- **3D-Vorschau:** Zeigt den Bauplan bis zur gewählten Ebene als einfache farbige Blöcke.
+- **3D-Ansicht:** Zeigt die ganze Farm oder den Stand bis zur gewählten Ebene. Ziehen dreht,
+  zwei Finger zoomen, Antippen zeigt den Block.
+- **Blöcke wie im Spiel:** siehe nächster Abschnitt.
 - **Export:** Als `.mcstructure` für den Bedrock-Konstruktionsblock (noch nicht im Spiel getestet)
   oder als `.litematic` für die Java-Mod Litematica.
 - **Notizen:** Pro Farm eigene Notizen und die Koordinaten, an denen sie in deiner Welt steht.
 
+### Blöcke wie im Spiel
+
+Ohne weiteres Zutun zeigt die App Blöcke als einfache Farben mit Symbolen. So schaltest du das
+echte Aussehen ein:
+
+1. Zahnrad oben rechts → **Aussehen der Blöcke**.
+2. **Original-Texturen laden** antippen (braucht einmal Internet, wenige Sekunden).
+3. Fertig – ab jetzt sehen Blöcke in der 3D-Ansicht, im Bauplan von oben und in der Legende aus
+   wie im Spiel. Das funktioniert danach auch offline.
+
+Die Bilder kommen direkt aus dem offiziellen Beispiel-Paket von Mojang
+([bedrock-samples](https://github.com/Mojang/bedrock-samples)) und werden nur auf deinem Gerät
+gespeichert. Sie liegen nicht in diesem Projekt und werden nicht weitergegeben. Für sie gilt die
+Minecraft-EULA. Mit **Texturen löschen** entfernst du sie wieder.
+
+Grenzen der Darstellung:
+
+- Würfel, Stufen, Treppen, Kolben, Beobachter, Trichter, Truhen, Verstärker, Schienen, Pflanzen,
+  Zäune, Mauern und Flüssigkeiten haben ihre eigene Form. Seltene Sonderformen sind vereinfacht
+  (ansteigende Schienen liegen flach, Türen sind geschlossen, Redstone-Staub ist angenähert).
+- Blöcke, die das Spiel nicht als normale Blocktextur zeichnet (Betten, Schilder, Banner), und
+  Blöcke, die das Paket nicht kennt, erscheinen weiter als farbiger Würfel.
+- Kommt eine neue Farm mit neuen Blöcken dazu, lädst du die fehlenden Bilder mit demselben Knopf nach.
+
 ### Symbole im Bauplan
+
+Mit Original-Texturen blendest du die Pfeile über **Pfeile an/aus** ein oder aus.
 
 | Symbol | Bedeutung |
 |---|---|
@@ -129,5 +160,7 @@ den Eintrag **GitHub Actions** wählen.
 ## Rechtliches
 
 Farmatlas ist ein privates Fanprojekt und steht in keiner Verbindung zu Mojang oder
-Microsoft. Es enthält keine Texturen oder Grafiken aus Minecraft; Blöcke werden mit
-eigenen Farben und Symbolen dargestellt.
+Microsoft. Das Repository enthält keine Texturen oder Grafiken aus Minecraft; ohne weiteres
+Zutun werden Blöcke mit eigenen Farben und Symbolen dargestellt. Wer in den Einstellungen
+„Original-Texturen laden“ wählt, lädt die Bilder selbst von Mojangs offiziellem
+Beispiel-Paket auf das eigene Gerät; dafür gilt die Minecraft-EULA.

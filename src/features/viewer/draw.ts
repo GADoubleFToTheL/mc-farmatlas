@@ -111,7 +111,9 @@ function drawOverlay(ctx: CanvasRenderingContext2D, v: BlockVisual, x: number, y
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,0.95)';
   ctx.shadowBlur = Math.max(2, s * 0.12);
-  if (traits.arrow) {
+  // Beobachter, Verstärker und Komparator zeigen ihre Richtung schon in der Textur.
+  const ownArrow = /:(observer|repeater|comparator)$/.test(v.state.id);
+  if (traits.arrow && !ownArrow) {
     drawArrow(ctx, cx, cy, s * 0.24, traits.arrow, '#ffffff');
     drawArrow(ctx, cx, cy, s * 0.24, traits.arrow, '#ffffff');
   }

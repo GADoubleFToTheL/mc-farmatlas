@@ -84,9 +84,7 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
   const selectedPalette = selected ? paletteIndexAt(structure, selected.x, selected.y, selected.z) : 0;
 
   const toggleDone = () => {
-    const doneLayers = done
-      ? farmState.doneLayers.filter((l) => l !== layer + 1)
-      : [...farmState.doneLayers, layer + 1].sort((a, b) => a - b);
+    const doneLayers = done ? farmState.doneLayers.filter((l) => l !== layer + 1) : [...farmState.doneLayers, layer + 1].sort((a, b) => a - b);
     updateFarmState(farm.id, { doneLayers });
     if (!done && layer < total - 1) setLayer(layer + 1);
   };
@@ -121,18 +119,6 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
             {WAKE_TEXT[wake]}
           </p>
         </div>
-        <Segmented
-          label="Ansicht"
-          value={mode}
-          onChange={(m) => {
-            setMode(m);
-            setSelected(null);
-          }}
-          options={[
-            { value: '3d', label: '3D' },
-            { value: '2d', label: 'Ebene' },
-          ]}
-        />
         <span className="px-1 font-mono text-sm tabular-nums" aria-label={`${doneCount} von ${total} Ebenen fertig`}>
           {doneCount}/{total}
         </span>
@@ -149,20 +135,36 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
       </div>
 
       <div className="relative min-h-0 flex-1">
+        <Segmented
+          label="Ansicht"
+          className="absolute top-2 left-2 z-10 bg-bg/90"
+          value={mode}
+          onChange={(m) => {
+            setMode(m);
+            setSelected(null);
+          }}
+          options={[
+            { value: '3d', label: '3D' },
+            { value: '2d', label: 'Ebene' },
+          ]}
+        />
         {mode === '3d' ? (
           <Suspense fallback={<p className="absolute inset-0 grid place-items-center text-sm text-muted">Lade 3D-Ansicht …</p>}>
-            <Preview3D
-              structure={structure}
-              visuals={visuals}
-              pack={pack.index}
-              maxLayer={layer}
-              start={start}
-              dimBelow={dimDone}
-              highlight={highlight}
-              selected={selected}
-              onPick={setSelected}
-              className="absolute inset-0"
-            />
+            <div className="absolute inset-0">
+              <Preview3D
+                structure={structure}
+                visuals={visuals}
+                pack={pack.index}
+                maxLayer={layer}
+                start={start}
+                dimBelow={dimDone}
+                ghostAbove
+                highlight={highlight}
+                selected={selected}
+                onPick={setSelected}
+                className="size-full"
+              />
+            </div>
           </Suspense>
         ) : (
           <LayerCanvas
@@ -207,9 +209,7 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
             onClose={() => setSelected(null)}
           />
         ) : allDone ? (
-          <p className="rounded-lg bg-accent/15 px-3 py-2 text-sm font-medium text-accent">
-            Alle Ebenen sind abgehakt – die Farm ist fertig gebaut.
-          </p>
+          <p className="rounded-lg bg-accent/15 px-3 py-2 text-sm font-medium text-accent">Alle Ebenen sind abgehakt – die Farm ist fertig gebaut.</p>
         ) : (
           steps.length > 0 && (
             <p className="max-h-20 overflow-y-auto text-sm leading-snug text-muted">

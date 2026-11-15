@@ -29,7 +29,8 @@ Bedrock und Java, jeweils klar gekennzeichnet.
 - Raten nur mit Quelle (`rate.source` verweist auf `sources`); die App zeigt „laut Quelle“.
 - Neue Farmen starten mit `"status": "ungeprueft"`. Nur der Nutzer setzt den Status hoch.
 - Fremde Schematics kommen nur ins Repo, wenn der Ersteller die Weitergabe erlaubt.
-- Keine Mojang-Texturen und keine fremden Bilder ins Repo.
+- Keine Mojang-Texturen und keine fremden Bilder ins Repo – auch nicht in Tests oder `public/`.
+  Original-Texturen lädt der Nutzer selbst zur Laufzeit aufs Gerät (siehe „Texturen“).
 
 ## Konventionen
 
@@ -47,10 +48,11 @@ Bedrock und Java, jeweils klar gekennzeichnet.
 |---|---|
 | `data/farms/` | eine JSON-Datei pro Farm |
 | `src/lib/` | Kernlogik ohne UI: `schema`, `version`, `blockstate`, `structure`, `traits`, `materials`, `catalog`, `userdata`, `names`, `blockstyle`, `bedrock`, `dataversion`, `localfarm`, `transform`, `nbt` |
+| `src/lib/textures/` | Texturpaket-Index (`pack`), TGA-Leser (`tga`), Blockmodelle (`blockmodel`), Geometrie (`meshdata`) |
 | `src/lib/exporters/` | Export als `.litematic` und `.mcstructure` |
 | `src/lib/importers/` | Schematic-Parser (`schematic.ts`) und echte Testdateien (`fixtures/`) |
 | `src/db/` | IndexedDB (`database.ts`) und Zustand im Speicher (`store.ts`) |
-| `src/features/` | `catalog`, `farm`, `viewer`, `materials`, `build`, `import`, `settings` |
+| `src/features/` | `catalog`, `farm`, `viewer` (mit `three/` für die 3D-Szene), `materials`, `build`, `import`, `settings`, `textures` |
 | `src/ui/` | gemeinsame Bausteine (Knöpfe, Chips, Blatt, Icons) |
 | `scripts/` | Node-Skripte (`validate.ts`, `import.ts`) |
 
@@ -91,6 +93,23 @@ Wichtige Zusammenhänge:
 - `exporters/mcstructure.ts` nutzt `javaToBedrock` aus `bedrock.ts`. Im Spiel ungetestet –
   die Oberfläche sagt das auch. Neue Blöcke dort nur mit belegter Zuordnung ergänzen.
 - `Preview3D.tsx` (three.js) wird erst beim Öffnen der 3D-Ansicht geladen.
+
+### Texturen („Wie im Spiel“)
+
+- Einstellung `settings.textures`: `aus` (eigene Farben, Standard) oder `original`. Bei `original`
+  lädt `features/textures/textureStore.ts` die Bilder aus Mojangs `bedrock-samples`
+  (feste Version `PACK_VERSION` in `lib/textures/pack.ts`) und legt sie in der Cache-API des
+  Geräts ab. Geladen wird nur, was die Baupläne brauchen; nichts davon kommt ins Repo.
+- `pack.ts` liest `blocks.json` und `terrain_texture.json` (Block → Texturschlüssel → Pfad).
+  Java-IDs, die in Bedrock anders heißen, stehen dort in der Alias-Tabelle.
+- `blockmodel.ts` baut je Blockzustand ein Modell aus Quadern/Kreuzen in 1/16-Einheiten, erst
+  `rotX`, dann `rotY`. Standardlage ist „zeigt nach Süden“ bzw. wie im Java-Modell. Neue Formen
+  hier ergänzen und in `blockmodel.test.ts` die Ausrichtung prüfen (Kolbenkopf, Beobachter-Gesicht).
+  Ohne Paketeintrag gibt es einen farbigen Würfel (`three/models.ts`).
+- `three/blockScene.ts` zeichnet instanziert, mit blassen „Geister“-Ebenen über der aktuellen;
+  `three/tiles.ts` rendert daraus die Kacheln für die Ebenen-Ansicht und die Legende.
+- Sichtprüfung nur mit echtem Paket möglich: `npm run build`, `npm run preview`, in den
+  Einstellungen laden, dann 3D-Ansicht und Bau-Modus bei 390 px ansehen.
 
 ## Datenschema
 

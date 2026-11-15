@@ -35,6 +35,8 @@ interface Props {
   start: { x: number; y: number; z: number };
   /** Ebenen unter der aktuellen abdunkeln. */
   dimBelow?: boolean;
+  /** Ebenen über der aktuellen durchscheinend andeuten. */
+  ghostAbove?: boolean;
   highlight?: ReadonlySet<number> | null;
   selected?: PickResult | null;
   /** Antippen eines Blocks (null = daneben getippt). */
@@ -53,6 +55,7 @@ export default function Preview3D({
   maxLayer,
   start,
   dimBelow = false,
+  ghostAbove = false,
   highlight = null,
   selected = null,
   onPick,
@@ -61,8 +64,8 @@ export default function Preview3D({
   const host = useRef<HTMLDivElement>(null);
   const api = useRef<Api | null>(null);
   const [state, setState] = useState<'laedt' | 'bereit' | 'fehler'>('laedt');
-  const latest = useRef({ maxLayer, dimBelow, highlight, selected, onPick });
-  latest.current = { maxLayer, dimBelow, highlight, selected, onPick };
+  const latest = useRef({ maxLayer, dimBelow, ghostAbove, highlight, selected, onPick });
+  latest.current = { maxLayer, dimBelow, ghostAbove, highlight, selected, onPick };
 
   useEffect(() => {
     const container = host.current;
@@ -87,14 +90,32 @@ export default function Preview3D({
     const scene = new Scene();
     const span = Math.max(size.x, size.y, size.z);
     const camera = new PerspectiveCamera(42, 1, 0.1, span * 12 + 50);
-    // Blick von Südosten schräg oben; Norden (−z) liegt hinten.
-    camera.position.set(size.x / 2 + span * 1.05, size.y / 2 + span * 0.9, size.z / 2 + span * 1.2);
     const controls = new OrbitControls(camera, canvas);
-    controls.target.set(size.x / 2, Math.min(size.y, latest.current.maxLayer + 1) / 2, size.z / 2);
+    controls.target.set(size.x / 2, size.y / 2, size.z / 2);
     controls.enableDamping = false;
     controls.maxDistance = span * 6 + 20;
     controls.minDistance = 1.5;
-    controls.update();
+    // Blick von Südosten schräg oben; Norden (−z) liegt hinten. Der Abstand wird so
+    // gewählt, dass der ganze Bauplan gerade ins Bild passt.
+    const radius = Math.hypot(size.x, size.y, size.z) / 2;
+    let touched = false;
+    controls.addEventListener('start', () => {
+      touched = true;
+    });
+    const frameAll = () => {
+      const vertical = (camera.fov * Math.PI) / 180;
+      const horizontal = 2 * Math.atan(Math.tan(vertical / 2) * camera.aspect);
+      const distance = Math.min(controls.maxDistance, (radius / Math.sin(Math.min(vertical, horizontal) / 2)) * 0.92);
+      const dir = { x: 0.55, y: 0.55, z: 0.63 };
+      const length = Math.hypot(dir.x, dir.y, dir.z);
+      camera.position.set(
+        size.x / 2 + (dir.x / length) * distance,
+        size.y / 2 + (dir.y / length) * distance,
+        size.z / 2 + (dir.z / length) * distance,
+      );
+      controls.update();
+    };
+    frameAll();
 
     let frame = 0;
     const render = () => {
@@ -131,7 +152,7 @@ export default function Preview3D({
       if (disposed) return;
       const l = latest.current;
       api.current = { update };
-      update({ maxLayer: l.maxLayer, dimBelow: l.dimBelow, highlight: l.highlight }, l.selected);
+      update({ maxLayer: l.maxLayer, dimBelow: l.dimBelow, ghostAbove: l.ghostAbove, highlight: l.highlight }, l.selected);
       setState('bereit');
     });
 
@@ -160,6 +181,7 @@ export default function Preview3D({
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+      if (!touched) frameAll();
       render();
     });
     resize.observe(container);
@@ -181,8 +203,8 @@ export default function Preview3D({
   }, [structure, visuals, pack, start]);
 
   useEffect(() => {
-    api.current?.update({ maxLayer, dimBelow, highlight }, selected);
-  }, [maxLayer, dimBelow, highlight, selected]);
+    api.current?.update({ maxLayer, dimBelow, ghostAbove, highlight }, selected);
+  }, [maxLayer, dimBelow, ghostAbove, highlight, selected]);
 
   return (
     <div ref={host} className={`relative ${className ?? ''}`}>

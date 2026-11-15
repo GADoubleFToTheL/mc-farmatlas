@@ -48,6 +48,8 @@ export function BlueprintView({
   const [selected, setSelected] = useState<PickResult | null>(null);
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
   const [mode, setMode] = useState<'2d' | '3d'>('2d');
+  // 3D: ganze Farm zeigen oder nur bis zur gewählten Ebene (Rest angedeutet)
+  const [whole, setWhole] = useState(true);
   const total = structure.size.y;
 
   const legend = useMemo(() => buildLegend(structure, visuals, layer), [structure, visuals, layer]);
@@ -58,8 +60,8 @@ export function BlueprintView({
 
   // Auswahl verwerfen, wenn sie nach einem Ebenenwechsel nicht mehr sichtbar ist.
   useEffect(() => {
-    setSelected((s) => (s && (mode === '2d' ? s.y !== layer : s.y > layer) ? null : s));
-  }, [layer, mode]);
+    setSelected((s) => (s && (mode === '2d' ? s.y !== layer : !whole && s.y > layer) ? null : s));
+  }, [layer, mode, whole]);
   useEffect(() => setSelected(null), [structure]);
 
   const change = (next: number) => onLayerChange(Math.max(0, Math.min(total - 1, next)));
@@ -103,7 +105,8 @@ export function BlueprintView({
             structure={structure}
             visuals={visuals}
             pack={pack.index}
-            maxLayer={layer}
+            maxLayer={whole ? total - 1 : layer}
+            ghostAbove={!whole}
             start={start}
             highlight={highlight}
             selected={selected}
@@ -113,11 +116,26 @@ export function BlueprintView({
         </Suspense>
       )}
 
-      <LayerStepper layer={layer} total={total} onChange={change} done={doneLayers.includes(layer + 1)} />
+      {mode === '3d' && (
+        <Segmented
+          label="Umfang der 3D-Ansicht"
+          className="self-start"
+          value={whole ? 'ganz' : 'ebene'}
+          onChange={(v) => setWhole(v === 'ganz')}
+          options={[
+            { value: 'ganz', label: 'Ganze Farm' },
+            { value: 'ebene', label: 'Bis zur Ebene' },
+          ]}
+        />
+      )}
+
+      {(mode === '2d' || !whole) && (
+        <LayerStepper layer={layer} total={total} onChange={change} done={doneLayers.includes(layer + 1)} />
+      )}
 
       {mode === '3d' && (
         <p className="text-xs leading-relaxed text-muted">
-          Gezeigt werden die Ebenen 1 bis {layer + 1}. Ziehen dreht, zwei Finger (oder Mausrad) zoomen, Antippen zeigt den Block. Der
+          {whole ? 'Du siehst die fertige Farm.' : `Fest gezeigt werden die Ebenen 1 bis ${layer + 1}, der Rest ist angedeutet.`} Ziehen dreht, zwei Finger (oder Mausrad) zoomen, Antippen zeigt den Block. Der
           grüne Pfeil am Boden zeigt nach Norden, der grüne Rahmen markiert den Startblock.
         </p>
       )}
