@@ -10,6 +10,7 @@ import { Button, Segmented, cx } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
 import { MaterialsPanel } from '../materials/MaterialsPanel';
+import { TexturePrompt } from '../textures/TexturePrompt';
 import { usePack } from '../textures/usePack';
 import { BlockInfo } from '../viewer/BlockInfo';
 import { LayerCanvas, type LayerCanvasHandle } from '../viewer/LayerCanvas';
@@ -184,6 +185,7 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
             className="absolute inset-0 block size-full"
           />
         )}
+        <TexturePrompt dismissible className="absolute inset-x-2 bottom-2 z-10" />
         {highlightKey && highlight && (
           <button
             type="button"

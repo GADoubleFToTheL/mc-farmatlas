@@ -15,7 +15,8 @@ import { EDITION_LABELS } from '../../lib/catalog';
 import { useCatalog } from '../../data/farms';
 import { PACK_VERSION } from '../../lib/textures/pack';
 import { isPackInstalled, removePack } from '../textures/textureStore';
-import { ensurePack, resetPack } from '../textures/usePack';
+import { installTextures } from '../textures/install';
+import { resetPack } from '../textures/usePack';
 import { Button, Segmented } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 
@@ -70,15 +71,14 @@ function TextureCard() {
     setBusy(true);
     setMessage(null);
     try {
-      const index = await ensurePack();
-      if (!index) {
+      const result = await installTextures(
+        catalog.summaries.map((s) => s.farm),
+        (done, total) => setProgress({ done, total }),
+      );
+      if (!result.ok) {
         setMessage({ tone: 'error', text: 'Das Texturpaket war nicht erreichbar. Bitte prüfe deine Internetverbindung und versuche es noch einmal.' });
         return;
       }
-      const { preloadForFarms } = await import('../textures/preload');
-      const farms = catalog.summaries.map((s) => s.farm);
-      const result = await preloadForFarms(farms, index, (done, total) => setProgress({ done, total }));
-      updateSettings({ textures: 'original' });
       setInstalled(true);
       setMessage({
         tone: 'ok',

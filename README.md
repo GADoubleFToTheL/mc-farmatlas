@@ -53,10 +53,14 @@ Das Projekt entsteht in Phasen:
 Ohne weiteres Zutun zeigt die App Blöcke als einfache Farben mit Symbolen. So schaltest du das
 echte Aussehen ein:
 
-1. Zahnrad oben rechts → **Aussehen der Blöcke**.
-2. **Original-Texturen laden** antippen (braucht einmal Internet, wenige Sekunden).
+1. Eine Farm mit Bauplan öffnen (Reiter „Bauplan“ oder Bau-Modus).
+2. Im Kasten „Blöcke wie im Spiel anzeigen?“ auf **Wie im Spiel anzeigen** tippen
+   (braucht einmal Internet, wenige Sekunden).
 3. Fertig – ab jetzt sehen Blöcke in der 3D-Ansicht, im Bauplan von oben und in der Legende aus
    wie im Spiel. Das funktioniert danach auch offline.
+
+Dasselbe geht über das Zahnrad oben rechts → **Aussehen der Blöcke**. Dort schaltest du auch
+zurück auf einfache Farben.
 
 Die Bilder kommen direkt aus dem offiziellen Beispiel-Paket von Mojang
 ([bedrock-samples](https://github.com/Mojang/bedrock-samples)) und werden nur auf deinem Gerät

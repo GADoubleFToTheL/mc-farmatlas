@@ -100,6 +100,8 @@ Wichtige Zusammenhänge:
   lädt `features/textures/textureStore.ts` die Bilder aus Mojangs `bedrock-samples`
   (feste Version `PACK_VERSION` in `lib/textures/pack.ts`) und legt sie in der Cache-API des
   Geräts ab. Geladen wird nur, was die Baupläne brauchen; nichts davon kommt ins Repo.
+- `TexturePrompt.tsx` bietet das Laden direkt am Bauplan und im Bau-Modus an (ein Tipp);
+  `install.ts` ist der gemeinsame Ablauf für Prompt und Einstellungen.
 - `pack.ts` liest `blocks.json` und `terrain_texture.json` (Block → Texturschlüssel → Pfad).
   Java-IDs, die in Bedrock anders heißen, stehen dort in der Alias-Tabelle.
 - `blockmodel.ts` baut je Blockzustand ein Modell aus Quadern/Kreuzen in 1/16-Einheiten, erst

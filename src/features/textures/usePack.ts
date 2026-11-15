@@ -21,18 +21,21 @@ function set(next: PackState): void {
   for (const l of listeners) l();
 }
 
-let loading = false;
+let pending: Promise<PackIndex | null> | null = null;
 
 /** Lädt die Zuordnung (aus dem Cache oder dem Netz), falls noch nicht geschehen. */
-export async function ensurePack(): Promise<PackIndex | null> {
-  if (state.index) return state.index;
-  if (loading) return null;
-  loading = true;
+export function ensurePack(): Promise<PackIndex | null> {
+  if (state.index) return Promise.resolve(state.index);
+  if (pending) return pending;
   set({ status: 'laedt', index: null });
-  const index = await loadPackIndex();
-  loading = false;
-  set(index ? { status: 'bereit', index } : { status: 'fehler', index: null });
-  return index;
+  pending = loadPackIndex()
+    .catch(() => null)
+    .then((index) => {
+      pending = null;
+      set(index ? { status: 'bereit', index } : { status: 'fehler', index: null });
+      return index;
+    });
+  return pending;
 }
 
 export function resetPack(): void {

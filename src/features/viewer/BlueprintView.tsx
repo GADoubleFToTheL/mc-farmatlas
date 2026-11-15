@@ -3,6 +3,7 @@ import { blockIndex, paletteIndexAt } from '../../lib/structure';
 import { composeOrientation, isIdentity, NO_ORIENTATION, type Orientation } from '../../lib/transform';
 import { Button, Segmented } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
+import { TexturePrompt } from '../textures/TexturePrompt';
 import { usePack } from '../textures/usePack';
 import { BlockInfo } from './BlockInfo';
 import { Compass } from './Compass';
@@ -81,6 +82,8 @@ export function BlueprintView({
         ]}
       />
 
+      <TexturePrompt />
+
       {mode === '2d' ? (
         <LayerCanvas
           ref={canvas}
@@ -137,21 +140,6 @@ export function BlueprintView({
         <p className="text-xs leading-relaxed text-muted">
           {whole ? 'Du siehst die fertige Farm.' : `Fest gezeigt werden die Ebenen 1 bis ${layer + 1}, der Rest ist angedeutet.`} Ziehen dreht, zwei Finger (oder Mausrad) zoomen, Antippen zeigt den Block. Der
           grüne Pfeil am Boden zeigt nach Norden, der grüne Rahmen markiert den Startblock.
-        </p>
-      )}
-
-      {pack.status === 'aus' && (
-        <p className="rounded-lg border border-line bg-surface px-3 py-2 text-xs leading-relaxed text-muted">
-          Du siehst die einfache Darstellung mit eigenen Farben. In den{' '}
-          <a href="#/einstellungen" className="text-accent underline">
-            Einstellungen
-          </a>{' '}
-          kannst du die Original-Texturen laden – dann sehen die Blöcke aus wie im Spiel.
-        </p>
-      )}
-      {pack.status === 'fehler' && (
-        <p className="rounded-lg border border-warn/40 bg-warn/10 px-3 py-2 text-xs leading-relaxed">
-          Die Original-Texturen konnten nicht geladen werden (keine Verbindung?). Bis dahin siehst du die einfache Darstellung.
         </p>
       )}
 
