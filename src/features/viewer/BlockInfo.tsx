@@ -21,8 +21,11 @@ export function BlockInfo({
   start,
   note,
   content,
+  icon,
   onClose,
 }: {
+  /** Vorschaubild mit Original-Textur. */
+  icon?: CanvasImageSource | null;
   /** Hinweis zum Blockzustand, z. B. nicht übersetzte Bedrock-Eigenschaften. */
   note?: string;
   /** Was laut Schematic in diesem Behälter liegt. */
@@ -36,7 +39,7 @@ export function BlockInfo({
   const isStart = cell.x === start.x && cell.z === start.z && layer === start.y;
   return (
     <div role="status" className="flex items-start gap-3 rounded-xl border border-line bg-surface-2 p-3">
-      {visual ? <Swatch visual={visual} size={40} /> : <div className="size-10 shrink-0 rounded-[3px] border border-dashed border-line" />}
+      {visual ? <Swatch visual={visual} size={40} icon={icon} /> : <div className="size-10 shrink-0 rounded-[3px] border border-dashed border-line" />}
       <div className="min-w-0 flex-1">
         <p className="font-semibold">
           {visual ? visual.title : 'Luft (kein Block)'}

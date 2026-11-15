@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   exportBackup,
@@ -12,6 +12,10 @@ import { EDITIONS, type Edition } from '../../lib/schema';
 import { isEmptyFarmState, parseBackup, type Backup } from '../../lib/userdata';
 import { isValidVersion } from '../../lib/version';
 import { EDITION_LABELS } from '../../lib/catalog';
+import { useCatalog } from '../../data/farms';
+import { PACK_VERSION } from '../../lib/textures/pack';
+import { isPackInstalled, removePack } from '../textures/textureStore';
+import { ensurePack, resetPack } from '../textures/usePack';
 import { Button, Segmented } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 
@@ -46,6 +50,119 @@ function VersionField({ edition }: { edition: Edition }) {
       />
       {!valid && <span className="mt-1 block text-sm text-danger">Bitte eine Version wie 26.62 oder 1.21.11 eingeben.</span>}
     </label>
+  );
+}
+
+/** Original-Texturen: auf Wunsch von Mojangs Repository auf dieses Gerät laden. */
+function TextureCard() {
+  const settings = useSettings();
+  const catalog = useCatalog();
+  const [installed, setInstalled] = useState<boolean | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  const [message, setMessage] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null);
+
+  useEffect(() => {
+    void isPackInstalled().then(setInstalled);
+  }, []);
+
+  const install = async () => {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const index = await ensurePack();
+      if (!index) {
+        setMessage({ tone: 'error', text: 'Das Texturpaket war nicht erreichbar. Bitte prüfe deine Internetverbindung und versuche es noch einmal.' });
+        return;
+      }
+      const { preloadForFarms } = await import('../textures/preload');
+      const farms = catalog.summaries.map((s) => s.farm);
+      const result = await preloadForFarms(farms, index, (done, total) => setProgress({ done, total }));
+      updateSettings({ textures: 'original' });
+      setInstalled(true);
+      setMessage({
+        tone: 'ok',
+        text: `${result.found} Texturen für deine Baupläne geladen. Sie funktionieren jetzt auch ohne Internet. Texturen für später importierte Farmen lädt die App beim ersten Öffnen nach.`,
+      });
+    } finally {
+      setBusy(false);
+      setProgress(null);
+    }
+  };
+
+  const remove = async () => {
+    setBusy(true);
+    updateSettings({ textures: 'aus' });
+    resetPack();
+    await removePack();
+    setInstalled(false);
+    setBusy(false);
+    setMessage({ tone: 'ok', text: 'Die Texturen wurden von diesem Gerät gelöscht.' });
+  };
+
+  const active = settings.textures === 'original';
+
+  return (
+    <Card title="Aussehen der Blöcke">
+      <Segmented
+        label="Aussehen der Blöcke"
+        className="mb-3 w-full"
+        value={active ? 'original' : 'aus'}
+        onChange={(value) => {
+          if (value === 'aus') updateSettings({ textures: 'aus' });
+          else if (installed) updateSettings({ textures: 'original' });
+          else void install();
+        }}
+        options={[
+          { value: 'aus', label: 'Einfach (Farben)' },
+          { value: 'original', label: 'Wie im Spiel' },
+        ]}
+      />
+      <p className="text-sm leading-relaxed text-muted">
+        „Wie im Spiel“ zeigt Blöcke mit den Original-Texturen – in der Ebenenansicht, der Legende und in 3D. Die Texturen gehören
+        Mojang und liegen deshalb nicht in dieser App. Sie werden einmalig aus Mojangs offiziellem Beispielpaket für Bedrock (
+        {PACK_VERSION.replace('v1.', '')}) auf dein Gerät geladen und nur dort gespeichert. Es gelten die Bedingungen der
+        Minecraft-EULA.
+      </p>
+      <p className="mt-2 text-sm leading-relaxed text-muted">
+        Volle Blöcke und die wichtigen Redstone-Bauteile sind originalgetreu. Seltene Sonderformen werden vereinfacht dargestellt,
+        Blöcke ohne passende Textur als farbiger Würfel.
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {!installed && (
+          <Button variant="primary" disabled={busy || installed === null} onClick={() => void install()}>
+            <Icon name="download" />
+            {busy ? 'Lade …' : 'Original-Texturen laden'}
+          </Button>
+        )}
+        {installed && (
+          <>
+            <Button disabled={busy} onClick={() => void install()}>
+              <Icon name="download" />
+              {busy ? 'Lade …' : 'Für alle Baupläne nachladen'}
+            </Button>
+            <Button variant="ghost" disabled={busy} onClick={() => void remove()}>
+              Texturen löschen
+            </Button>
+          </>
+        )}
+      </div>
+      {progress && (
+        <div className="mt-3" role="progressbar" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.done} aria-label="Texturen werden geladen">
+          <div className="h-2 overflow-hidden rounded-full bg-surface-2">
+            <div className="h-full bg-accent transition-[width]" style={{ width: `${(progress.done / Math.max(1, progress.total)) * 100}%` }} />
+          </div>
+          <p className="mt-1 text-xs text-muted">
+            {progress.done} von {progress.total}
+          </p>
+        </div>
+      )}
+      {message && (
+        <p role="status" className={`mt-3 text-sm ${message.tone === 'ok' ? 'text-accent' : 'text-danger'}`}>
+          {message.text}
+        </p>
+      )}
+    </Card>
   );
 }
 
@@ -139,6 +256,8 @@ export function SettingsPage() {
           ]}
         />
       </Card>
+
+      <TextureCard />
 
       <Card title="Backup: Daten zwischen Handy und PC übertragen">
         <p className="text-sm leading-relaxed text-muted">

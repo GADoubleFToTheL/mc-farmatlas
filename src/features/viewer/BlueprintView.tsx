@@ -3,12 +3,15 @@ import { blockIndex, paletteIndexAt } from '../../lib/structure';
 import { composeOrientation, isIdentity, NO_ORIENTATION, type Orientation } from '../../lib/transform';
 import { Button, Segmented } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
+import { usePack } from '../textures/usePack';
 import { BlockInfo } from './BlockInfo';
 import { Compass } from './Compass';
-import { LayerCanvas, type CellPos, type LayerCanvasHandle } from './LayerCanvas';
+import { LayerCanvas, type LayerCanvasHandle } from './LayerCanvas';
 import { LayerStepper } from './LayerStepper';
 import { Legend, SymbolHelp } from './Legend';
+import type { PickResult } from './three/blockScene';
 import type { LoadedBlueprint } from './useBlueprint';
+import { useTiles } from './useTiles';
 import { buildLegend } from './visuals';
 
 // three.js ist groß – erst laden, wenn die 3D-Ansicht geöffnet wird.
@@ -38,8 +41,11 @@ export function BlueprintView({
 }) {
   const { structure, visuals, start, contents, markers } = blueprint;
   const canvas = useRef<LayerCanvasHandle>(null);
+  const pack = usePack();
+  const tiles = useTiles(blueprint, pack.index);
   const [showBelow, setShowBelow] = useState(true);
-  const [selected, setSelected] = useState<CellPos | null>(null);
+  const [symbols, setSymbols] = useState(true);
+  const [selected, setSelected] = useState<PickResult | null>(null);
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
   const [mode, setMode] = useState<'2d' | '3d'>('2d');
   const total = structure.size.y;
@@ -50,12 +56,15 @@ export function BlueprintView({
     return entry ? new Set(entry.paletteIndices) : null;
   }, [legend, highlightKey]);
 
+  // Auswahl verwerfen, wenn sie nach einem Ebenenwechsel nicht mehr sichtbar ist.
   useEffect(() => {
-    setSelected(null);
-  }, [layer]);
+    setSelected((s) => (s && (mode === '2d' ? s.y !== layer : s.y > layer) ? null : s));
+  }, [layer, mode]);
+  useEffect(() => setSelected(null), [structure]);
 
   const change = (next: number) => onLayerChange(Math.max(0, Math.min(total - 1, next)));
   const aspect = (structure.size.z + 1) / (structure.size.x + 1);
+  const selectedPalette = selected ? paletteIndexAt(structure, selected.x, selected.y, selected.z) : 0;
 
   return (
     <div className="flex flex-col gap-3">
@@ -66,7 +75,7 @@ export function BlueprintView({
         onChange={setMode}
         options={[
           { value: '2d', label: 'Ebene' },
-          { value: '3d', label: '3D-Vorschau' },
+          { value: '3d', label: '3D-Ansicht' },
         ]}
       />
 
@@ -78,21 +87,27 @@ export function BlueprintView({
           layer={layer}
           showBelow={showBelow}
           start={start}
-          selected={selected}
+          selected={selected && selected.y === layer ? { x: selected.x, z: selected.z } : null}
           highlight={highlight}
           markers={markers}
-          onSelect={setSelected}
+          tiles={tiles}
+          symbols={symbols}
+          onSelect={(cell) => setSelected(cell ? { x: cell.x, y: layer, z: cell.z } : null)}
           onSwipe={(d) => change(layer + d)}
           className="block w-full rounded-xl border border-line"
           style={{ height: `clamp(240px, min(${Math.round(aspect * 100)}vw, ${structure.size.z * 56 + 44}px), 62dvh)` }}
         />
       ) : (
-        <Suspense fallback={<div className="grid h-[52dvh] min-h-64 place-items-center rounded-xl border border-line text-sm text-muted">Lade 3D-Vorschau …</div>}>
+        <Suspense fallback={<div className="grid h-[52dvh] min-h-64 place-items-center rounded-xl border border-line text-sm text-muted">Lade 3D-Ansicht …</div>}>
           <Preview3D
             structure={structure}
             visuals={visuals}
+            pack={pack.index}
             maxLayer={layer}
             start={start}
+            highlight={highlight}
+            selected={selected}
+            onPick={setSelected}
             className="h-[52dvh] min-h-64 overflow-hidden rounded-xl border border-line bg-surface"
           />
         </Suspense>
@@ -102,8 +117,23 @@ export function BlueprintView({
 
       {mode === '3d' && (
         <p className="text-xs leading-relaxed text-muted">
-          Gezeigt werden die Ebenen 1 bis {layer + 1}. Ziehen dreht, zwei Finger (oder Mausrad) zoomen. Der grüne Pfeil am Boden zeigt
-          nach Norden, der kleine grüne Würfel markiert den Startblock.
+          Gezeigt werden die Ebenen 1 bis {layer + 1}. Ziehen dreht, zwei Finger (oder Mausrad) zoomen, Antippen zeigt den Block. Der
+          grüne Pfeil am Boden zeigt nach Norden, der grüne Rahmen markiert den Startblock.
+        </p>
+      )}
+
+      {pack.status === 'aus' && (
+        <p className="rounded-lg border border-line bg-surface px-3 py-2 text-xs leading-relaxed text-muted">
+          Du siehst die einfache Darstellung mit eigenen Farben. In den{' '}
+          <a href="#/einstellungen" className="text-accent underline">
+            Einstellungen
+          </a>{' '}
+          kannst du die Original-Texturen laden – dann sehen die Blöcke aus wie im Spiel.
+        </p>
+      )}
+      {pack.status === 'fehler' && (
+        <p className="rounded-lg border border-warn/40 bg-warn/10 px-3 py-2 text-xs leading-relaxed">
+          Die Original-Texturen konnten nicht geladen werden (keine Verbindung?). Bis dahin siehst du die einfache Darstellung.
         </p>
       )}
 
@@ -112,6 +142,11 @@ export function BlueprintView({
           <Icon name="layers" />
           Ebene darunter {showBelow ? 'an' : 'aus'}
         </Button>
+        {tiles && (
+          <Button aria-pressed={symbols} onClick={() => setSymbols(!symbols)} className={symbols ? 'border-accent text-accent' : ''}>
+            Pfeile {symbols ? 'an' : 'aus'}
+          </Button>
+        )}
         <Button onClick={() => canvas.current?.resetZoom()}>
           <Icon name="reset" />
           Zoom zurücksetzen
@@ -122,30 +157,15 @@ export function BlueprintView({
       <div className="rounded-xl border border-line bg-surface p-3">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="mr-auto text-sm font-semibold text-muted">Ausrichtung</h3>
-          <Button
-            aria-label="Bauplan nach links drehen"
-            onClick={() => {
-              setSelected(null);
-              onOrientationChange(composeOrientation(orientation, 'ccw'));
-            }}
-          >
+          <Button aria-label="Bauplan nach links drehen" onClick={() => onOrientationChange(composeOrientation(orientation, 'ccw'))}>
             ↺ Links
           </Button>
-          <Button
-            aria-label="Bauplan nach rechts drehen"
-            onClick={() => {
-              setSelected(null);
-              onOrientationChange(composeOrientation(orientation, 'cw'));
-            }}
-          >
+          <Button aria-label="Bauplan nach rechts drehen" onClick={() => onOrientationChange(composeOrientation(orientation, 'cw'))}>
             ↻ Rechts
           </Button>
           <Button
             aria-pressed={orientation.mirror}
-            onClick={() => {
-              setSelected(null);
-              onOrientationChange(composeOrientation(orientation, 'mirror'));
-            }}
+            onClick={() => onOrientationChange(composeOrientation(orientation, 'mirror'))}
             className={orientation.mirror ? 'border-accent text-accent' : ''}
           >
             ⇋ Spiegeln
@@ -153,7 +173,7 @@ export function BlueprintView({
         </div>
         <p className="mt-2 text-xs leading-relaxed text-muted">
           {isIdentity(orientation)
-            ? 'Der Bauplan steht wie in der Quelle. Drehe ihn, wenn die Farm bei dir in eine andere Richtung zeigen soll – die Pfeile der Blöcke drehen mit.'
+            ? 'Der Bauplan steht wie in der Quelle. Drehe ihn, wenn die Farm bei dir in eine andere Richtung zeigen soll – die Blöcke drehen mit.'
             : `Gedreht um ${orientation.rot * 90}°${orientation.mirror ? ', gespiegelt' : ''}. Norden bleibt oben; Ausrichtungen der Blöcke sind angepasst.`}
           {!isIdentity(orientation) && (
             <button type="button" className="ml-2 min-h-8 text-accent underline" onClick={() => onOrientationChange(NO_ORIENTATION)}>
@@ -170,13 +190,14 @@ export function BlueprintView({
 
       {children}
 
-      {selected && mode === '2d' && (
+      {selected && (
         <BlockInfo
-          visual={visuals[paletteIndexAt(structure, selected.x, layer, selected.z)] ?? null}
-          note={structure.paletteNotes?.[paletteIndexAt(structure, selected.x, layer, selected.z)]}
-          content={contents.get(blockIndex(structure.size, selected.x, layer, selected.z))}
+          visual={visuals[selectedPalette] ?? null}
+          icon={tiles?.icon(selectedPalette)}
+          note={structure.paletteNotes?.[selectedPalette]}
+          content={contents.get(blockIndex(structure.size, selected.x, selected.y, selected.z))}
           cell={selected}
-          layer={layer}
+          layer={selected.y}
           start={start}
           onClose={() => setSelected(null)}
         />
@@ -203,6 +224,7 @@ export function BlueprintView({
         <Legend
           entries={legend}
           activeKey={highlightKey}
+          tiles={tiles}
           onToggle={(e) => setHighlightKey(highlightKey === e.visual.legendKey ? null : e.visual.legendKey)}
         />
       </section>

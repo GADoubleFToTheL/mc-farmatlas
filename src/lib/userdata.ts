@@ -14,6 +14,8 @@ export const settingsSchema = z.object({
   edition: z.enum(EDITIONS),
   versions: z.object({ java: version, bedrock: version }),
   theme: z.enum(['dark', 'light']),
+  /** Aussehen der Blöcke: eigene Farben oder Original-Texturen (vom Nutzer auf das Gerät geladen). */
+  textures: z.enum(['aus', 'original']).default('aus'),
 });
 export type Settings = z.infer<typeof settingsSchema>;
 
@@ -21,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   edition: 'bedrock',
   versions: { bedrock: '26.62', java: '26.3' },
   theme: 'dark',
+  textures: 'aus',
 };
 
 export const farmStateSchema = z.object({

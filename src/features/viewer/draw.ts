@@ -97,6 +97,36 @@ function text(ctx: CanvasRenderingContext2D, value: string, x: number, y: number
 export interface DrawOptions {
   /** Kürzel einblenden (bei kleinen Zellen aus). */
   labels?: boolean;
+  /** Vorschaubild mit Original-Textur; ersetzt die farbige Fläche. */
+  image?: CanvasImageSource | null;
+  /** Pfeile und andere Symbole über dem Bild zeigen. */
+  symbols?: boolean;
+}
+
+/** Symbole über einem Texturbild: Pfeil, Verzögerung, Stufenhälfte – gut lesbar auf jedem Untergrund. */
+function drawOverlay(ctx: CanvasRenderingContext2D, v: BlockVisual, x: number, y: number, s: number): void {
+  const { traits } = v;
+  const cx = x + s / 2;
+  const cy = y + s / 2;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.95)';
+  ctx.shadowBlur = Math.max(2, s * 0.12);
+  if (traits.arrow) {
+    drawArrow(ctx, cx, cy, s * 0.24, traits.arrow, '#ffffff');
+    drawArrow(ctx, cx, cy, s * 0.24, traits.arrow, '#ffffff');
+  }
+  if (traits.half && traits.half !== 'double' && s >= 18) {
+    text(ctx, traits.half === 'top' ? 'O' : 'U', x + s * 0.2, y + s * 0.2, Math.max(9, s * 0.26), '#ffffff');
+  }
+  ctx.restore();
+  if (traits.delay && s >= 14) {
+    const r = s * 0.2;
+    ctx.fillStyle = '#b81a10';
+    ctx.beginPath();
+    ctx.arc(x + s - r - 1, y + s - r - 1, r, 0, Math.PI * 2);
+    ctx.fill();
+    text(ctx, String(traits.delay), x + s - r - 1, y + s - r - 1, r * 1.5, '#ffffff');
+  }
 }
 
 /** Zeichnet einen Block in das Quadrat (x, y, s). */
@@ -108,6 +138,14 @@ export function drawBlock(
   s: number,
   options: DrawOptions = {},
 ): void {
+  if (options.image) {
+    const smoothing = ctx.imageSmoothingEnabled;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(options.image, x, y, s, s);
+    ctx.imageSmoothingEnabled = smoothing;
+    if (options.symbols !== false) drawOverlay(ctx, v, x, y, s);
+    return;
+  }
   const { traits, style } = v;
   const gap = s >= 14 ? 0.5 : 0;
   const cx = x + s / 2;

@@ -1,22 +1,29 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { NotFoundPage } from '../../app/NotFoundPage';
 import { useCatalog } from '../../data/farms';
 import { updateFarmState, useFarmState } from '../../db/store';
+import type { FarmSummary } from '../../lib/catalog';
 import { blockIndex, paletteIndexAt } from '../../lib/structure';
 import { isIdentity } from '../../lib/transform';
-import { Button, cx } from '../../ui/controls';
+import { Button, Segmented, cx } from '../../ui/controls';
 import { Icon } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
 import { MaterialsPanel } from '../materials/MaterialsPanel';
+import { usePack } from '../textures/usePack';
 import { BlockInfo } from '../viewer/BlockInfo';
-import { LayerCanvas, type CellPos, type LayerCanvasHandle } from '../viewer/LayerCanvas';
+import { LayerCanvas, type LayerCanvasHandle } from '../viewer/LayerCanvas';
 import { LayerStepper } from '../viewer/LayerStepper';
 import { Legend } from '../viewer/Legend';
+import type { PickResult } from '../viewer/three/blockScene';
 import { useBlueprint, type LoadedBlueprint } from '../viewer/useBlueprint';
+import { useTiles } from '../viewer/useTiles';
 import { buildLegend } from '../viewer/visuals';
-import type { FarmSummary } from '../../lib/catalog';
 import { useWakeLock } from './useWakeLock';
+
+const Preview3D = lazy(() => import('../viewer/Preview3D'));
+
+const EMPTY_FARM = { blueprint: null } as unknown as FarmSummary['farm'];
 
 export function BuildPage() {
   const { id } = useParams();
@@ -26,8 +33,6 @@ export function BuildPage() {
   if (!summary || !blueprint) return <NotFoundPage />;
   return <BuildMode key={summary.farm.id} summary={summary} blueprint={blueprint} />;
 }
-
-const EMPTY_FARM = { blueprint: null } as unknown as FarmSummary['farm'];
 
 function firstOpenLayer(done: readonly number[], total: number): number {
   for (let i = 0; i < total; i++) if (!done.includes(i + 1)) return i;
@@ -48,10 +53,15 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
   const farmState = useFarmState(farm.id);
   const wake = useWakeLock(true);
   const canvas = useRef<LayerCanvasHandle>(null);
+  const pack = usePack();
+  const tiles = useTiles(blueprint, pack.index);
 
   const [layer, setLayerRaw] = useState(() => firstOpenLayer(farmState.doneLayers, total));
+  const [mode, setMode] = useState<'3d' | '2d'>('3d');
   const [showBelow, setShowBelow] = useState(true);
-  const [selected, setSelected] = useState<CellPos | null>(null);
+  // In 3D: fertige Ebenen abdunkeln, damit die aktuelle hervorsticht
+  const [dimDone, setDimDone] = useState(true);
+  const [selected, setSelected] = useState<PickResult | null>(null);
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
@@ -71,6 +81,7 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
   const doneCount = farmState.doneLayers.filter((l) => l <= total).length;
   const allDone = doneCount >= total;
   const steps = farm.steps.filter((s) => s.layers?.includes(layer + 1)).map((s) => s.text);
+  const selectedPalette = selected ? paletteIndexAt(structure, selected.x, selected.y, selected.z) : 0;
 
   const toggleDone = () => {
     const doneLayers = done
@@ -110,6 +121,18 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
             {WAKE_TEXT[wake]}
           </p>
         </div>
+        <Segmented
+          label="Ansicht"
+          value={mode}
+          onChange={(m) => {
+            setMode(m);
+            setSelected(null);
+          }}
+          options={[
+            { value: '3d', label: '3D' },
+            { value: '2d', label: 'Ebene' },
+          ]}
+        />
         <span className="px-1 font-mono text-sm tabular-nums" aria-label={`${doneCount} von ${total} Ebenen fertig`}>
           {doneCount}/{total}
         </span>
@@ -126,21 +149,39 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
       </div>
 
       <div className="relative min-h-0 flex-1">
-        <LayerCanvas
-          ref={canvas}
-          structure={structure}
-          visuals={visuals}
-          layer={layer}
-          showBelow={showBelow}
-          start={start}
-          selected={selected}
-          highlight={highlight}
-          markers={markers}
-          onSelect={setSelected}
-          onSwipe={(d) => setLayer(layer + d)}
-          lockScroll
-          className="absolute inset-0 block size-full"
-        />
+        {mode === '3d' ? (
+          <Suspense fallback={<p className="absolute inset-0 grid place-items-center text-sm text-muted">Lade 3D-Ansicht …</p>}>
+            <Preview3D
+              structure={structure}
+              visuals={visuals}
+              pack={pack.index}
+              maxLayer={layer}
+              start={start}
+              dimBelow={dimDone}
+              highlight={highlight}
+              selected={selected}
+              onPick={setSelected}
+              className="absolute inset-0"
+            />
+          </Suspense>
+        ) : (
+          <LayerCanvas
+            ref={canvas}
+            structure={structure}
+            visuals={visuals}
+            layer={layer}
+            showBelow={showBelow}
+            start={start}
+            selected={selected && selected.y === layer ? { x: selected.x, z: selected.z } : null}
+            highlight={highlight}
+            markers={markers}
+            tiles={tiles}
+            onSelect={(cell) => setSelected(cell ? { x: cell.x, y: layer, z: cell.z } : null)}
+            onSwipe={(d) => setLayer(layer + d)}
+            lockScroll
+            className="absolute inset-0 block size-full"
+          />
+        )}
         {highlightKey && highlight && (
           <button
             type="button"
@@ -156,11 +197,12 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
       <div className="flex flex-col gap-2 border-t border-line px-3 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
         {selected ? (
           <BlockInfo
-            visual={visuals[paletteIndexAt(structure, selected.x, layer, selected.z)] ?? null}
-          note={structure.paletteNotes?.[paletteIndexAt(structure, selected.x, layer, selected.z)]}
-          content={contents.get(blockIndex(structure.size, selected.x, layer, selected.z))}
+            visual={visuals[selectedPalette] ?? null}
+            icon={tiles?.icon(selectedPalette)}
+            note={structure.paletteNotes?.[selectedPalette]}
+            content={contents.get(blockIndex(structure.size, selected.x, selected.y, selected.z))}
             cell={selected}
-            layer={layer}
+            layer={selected.y}
             start={start}
             onClose={() => setSelected(null)}
           />
@@ -180,14 +222,26 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
         <LayerStepper layer={layer} total={total} onChange={setLayer} done={done} />
 
         <div className="flex gap-2">
-          <Button
-            aria-pressed={showBelow}
-            aria-label={`Ebene darunter ${showBelow ? 'ausblenden' : 'einblenden'}`}
-            onClick={() => setShowBelow(!showBelow)}
-            className={cx('h-13 px-3.5', showBelow && 'border-accent text-accent')}
-          >
-            <Icon name="layers" className="size-6" />
-          </Button>
+          {mode === '3d' ? (
+            <Button
+              aria-pressed={dimDone}
+              aria-label="Fertige Ebenen abdunkeln"
+              title="Fertige Ebenen abdunkeln, damit die aktuelle hervorsticht"
+              onClick={() => setDimDone(!dimDone)}
+              className={cx('h-13 px-3.5', dimDone && 'border-accent text-accent')}
+            >
+              <Icon name="layers" className="size-6" />
+            </Button>
+          ) : (
+            <Button
+              aria-pressed={showBelow}
+              aria-label={`Ebene darunter ${showBelow ? 'ausblenden' : 'einblenden'}`}
+              onClick={() => setShowBelow(!showBelow)}
+              className={cx('h-13 px-3.5', showBelow && 'border-accent text-accent')}
+            >
+              <Icon name="layers" className="size-6" />
+            </Button>
+          )}
           <Button onClick={() => setSheetOpen(true)} className="h-13">
             <Icon name="list" />
             Blöcke
@@ -204,6 +258,7 @@ function BuildMode({ summary, blueprint }: { summary: FarmSummary; blueprint: Lo
         <Legend
           entries={legend}
           activeKey={highlightKey}
+          tiles={tiles}
           onToggle={(e) => {
             setHighlightKey(highlightKey === e.visual.legendKey ? null : e.visual.legendKey);
             setSheetOpen(false);

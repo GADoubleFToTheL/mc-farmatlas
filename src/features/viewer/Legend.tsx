@@ -1,5 +1,6 @@
 import { cx } from '../../ui/controls';
 import { Swatch } from './Swatch';
+import type { TileSet } from './three/tiles';
 import type { LegendEntry } from './visuals';
 
 /** Legende mit Anzahl; Antippen hebt die Blöcke im Raster hervor. */
@@ -7,7 +8,9 @@ export function Legend({
   entries,
   activeKey,
   onToggle,
+  tiles,
 }: {
+  tiles?: TileSet | null;
   entries: LegendEntry[];
   activeKey: string | null;
   onToggle: (entry: LegendEntry) => void;
@@ -30,7 +33,7 @@ export function Legend({
                 active ? 'border-accent bg-accent/10' : 'border-line bg-surface hover:bg-surface-2',
               )}
             >
-              <Swatch visual={entry.visual} />
+              <Swatch visual={entry.visual} icon={tiles?.icon(entry.visual.paletteIndex)} />
               <span className="min-w-0 flex-1 text-sm leading-snug">{entry.visual.title}</span>
               <span className="font-mono text-sm font-semibold tabular-nums">{entry.count}×</span>
             </button>

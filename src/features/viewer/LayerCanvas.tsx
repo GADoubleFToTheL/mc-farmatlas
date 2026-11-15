@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useImperativeHandle, useRef, type CSSProperties, type Ref } from 'react';
 import { blockIndex, paletteIndexAt, type Structure } from '../../lib/structure';
 import { drawBlock } from './draw';
+import type { TileSet } from './three/tiles';
 import type { BlockVisual } from './visuals';
 
 const RULER_LEFT = 30;
@@ -33,6 +34,10 @@ interface Props {
   highlight: ReadonlySet<number> | null;
   /** Blockpositionen (Index in der Struktur) mit Zusatzinfo, z. B. Behälter mit Inhalt. */
   markers?: ReadonlySet<number>;
+  /** Vorschaubilder mit Original-Texturen; ohne sie wird farbig gezeichnet. */
+  tiles?: TileSet | null;
+  /** Pfeile und Symbole über den Texturen zeigen. */
+  symbols?: boolean;
   onSelect: (cell: CellPos | null) => void;
   /** +1 = nächste (höhere) Ebene, −1 = vorherige. */
   onSwipe: (direction: 1 | -1) => void;
@@ -68,6 +73,8 @@ export function LayerCanvas({
   selected,
   highlight,
   markers,
+  tiles = null,
+  symbols = true,
   onSelect,
   onSwipe,
   lockScroll = false,
@@ -79,8 +86,8 @@ export function LayerCanvas({
   const view = useRef<View>({ scale: 24, ox: 0, oy: 0, fit: 24 });
   const size = useRef({ w: 0, h: 0 });
   const frame = useRef(0);
-  const props = useRef({ structure, visuals, layer, showBelow, start, selected, highlight, markers });
-  props.current = { structure, visuals, layer, showBelow, start, selected, highlight, markers };
+  const props = useRef({ structure, visuals, layer, showBelow, start, selected, highlight, markers, tiles, symbols });
+  props.current = { structure, visuals, layer, showBelow, start, selected, highlight, markers, tiles, symbols };
 
   const clamp = useCallback(() => {
     const v = view.current;
@@ -145,7 +152,7 @@ export function LayerCanvas({
           if (!visual) continue;
           const dim = p.highlight !== null && !p.highlight.has(index);
           if (dim) ctx.globalAlpha = 0.22;
-          drawBlock(ctx, visual, px, py, c, { labels });
+          drawBlock(ctx, visual, px, py, c, { labels, image: p.tiles?.top(x, p.layer, z), symbols: p.symbols });
           ctx.globalAlpha = 1;
           // Raute oben rechts: Hier gibt es Zusatzinfos (Antippen)
           if (p.markers?.has(blockIndex(p.structure.size, x, p.layer, z)) && c >= 10) {
@@ -167,8 +174,8 @@ export function LayerCanvas({
         } else if (p.showBelow && p.layer > 0) {
           const below = p.visuals[paletteIndexAt(p.structure, x, p.layer - 1, z)];
           if (below) {
-            ctx.globalAlpha = 0.26;
-            drawBlock(ctx, below, px, py, c);
+            ctx.globalAlpha = p.tiles ? 0.34 : 0.26;
+            drawBlock(ctx, below, px, py, c, { image: p.tiles?.top(x, p.layer - 1, z), symbols: false });
             ctx.globalAlpha = 1;
           }
         }
@@ -305,7 +312,7 @@ export function LayerCanvas({
 
   useEffect(() => {
     requestDraw();
-  }, [layer, showBelow, selected, highlight, markers, visuals, start, requestDraw]);
+  }, [layer, showBelow, selected, highlight, markers, tiles, symbols, visuals, start, requestDraw]);
 
   // Farbwechsel (hell/dunkel) neu zeichnen
   useEffect(() => {
